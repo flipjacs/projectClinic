@@ -1,0 +1,43 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Distribuição / build
+build/
+dist/
+*.egg-info/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Banco / dados
+*.sqlite3
+*.db
+postgres_data/
+mysql_data/
+
+# Coverage / testes
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+logs/

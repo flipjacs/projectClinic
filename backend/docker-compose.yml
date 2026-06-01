@@ -1,0 +1,57 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: clinic_db
+    restart: unless-stopped
+    command:
+      - --default-authentication-plugin=caching_sha2_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${DB_NAME:-clinic_db}
+      MYSQL_USER: ${DB_USER:-clinic}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-clinic_password}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - ${DB_USER:-clinic}
+        - -p${DB_PASSWORD:-clinic_password}
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinic_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app:z
+      - ./alembic:/app/alembic:z
+      - ./alembic.ini:/app/alembic.ini:ro,z
+      - ./tests:/app/tests:ro,z
+
+volumes:
+  mysql_data:
+    driver: local
