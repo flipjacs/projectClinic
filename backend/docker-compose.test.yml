@@ -1,0 +1,35 @@
+## MySQL dedicated to the automated test suite.
+##
+## Bring it up, then point the suite at it:
+##
+##   docker compose -f docker-compose.test.yml up -d
+##   export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+##   pytest
+##   docker compose -f docker-compose.test.yml down -v   # wipe when done
+##
+## Uses a NON-default host port (3307) and an isolated volume so it never
+## collides with — or touches — your development/production database.
+services:
+  db_test:
+    image: mysql:8.0
+    container_name: clinic_db_test
+    command:
+      - --default-authentication-plugin=caching_sha2_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: clinic_test
+      MYSQL_USER: clinic
+      MYSQL_PASSWORD: clinic_password
+    ports:
+      - "3307:3306"
+    tmpfs:
+      # Keep test data in RAM: fast and guaranteed disposable.
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clinic", "-pclinic_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s

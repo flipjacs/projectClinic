@@ -17,6 +17,9 @@ MAX_DURATION = timedelta(hours=6)
 
 
 def _ensure_tz_aware(v: datetime) -> datetime:
+    # ensure_aware_utc já normaliza para UTC e trunca em segundos (regra global,
+    # ver docs/architecture.md). Isso evita a ambiguidade de conflito de agenda
+    # no limite exato (fim de uma consulta == início da próxima) no MySQL.
     return ensure_aware_utc(v, "datetime")
 
 

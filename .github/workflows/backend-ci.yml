@@ -1,0 +1,101 @@
+name: backend-ci
+
+on:
+  push:
+    branches: [main, master]
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
+  pull_request:
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
+
+defaults:
+  run:
+    working-directory: backend
+
+env:
+  # Test-only configuration. NEVER put real secrets here — use GitHub Secrets
+  # for anything sensitive. These values only need to satisfy the app's config
+  # validators for the test environment.
+  APP_ENV: test
+  APP_DEBUG: "false"
+  SECRET_KEY: ci-test-secret-key-not-for-production-0123456789
+  CORS_ORIGINS: '["http://localhost:3000"]'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Fast feedback: SQLite + coverage gate (no external services).
+  # ---------------------------------------------------------------------------
+  sqlite-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Run SQLite suite with 80% coverage gate
+        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+
+  # ---------------------------------------------------------------------------
+  # Full fidelity: real MySQL — concurrency (FOR UPDATE) + Alembic migration
+  # smoke + the whole suite. Fails the build if migrations break.
+  # ---------------------------------------------------------------------------
+  mysql-tests:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: clinic_test
+          MYSQL_USER: clinic
+          MYSQL_PASSWORD: clinic_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u clinic -pclinic_password"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      # Dedicated, disposable schema — name contains "test" (safety guard) and
+      # is never a production database.
+      TEST_DATABASE_URL: mysql+pymysql://clinic:clinic_password@127.0.0.1:3306/clinic_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Validate Alembic migrations against MySQL (upgrade head + downgrade base)
+        env:
+          DATABASE_URL: mysql+pymysql://clinic:clinic_password@127.0.0.1:3306/clinic_test
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+      - name: Run full suite against MySQL (includes mysql_only + concurrency + Alembic smoke)
+        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+
+  # ---------------------------------------------------------------------------
+  # Dependency vulnerability audit (advisory — does not block the build).
+  # ---------------------------------------------------------------------------
+  dependency-audit:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit dependencies
+        run: pip-audit -r requirements.txt -r requirements-dev.txt

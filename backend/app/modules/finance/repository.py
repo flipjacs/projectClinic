@@ -205,7 +205,29 @@ class PaymentRepository:
         budget_id: int,
         *,
         exclude_payment_id: Optional[int] = None,
+        lock: bool = False,
     ) -> Decimal:
+        """Soma dos pagamentos não cancelados de um orçamento.
+
+        ``lock=True`` faz uma *locking read* (``SELECT ... FOR UPDATE``) das
+        linhas envolvidas. Isso é essencial para a checagem anti-superpagamento
+        sob o nível de isolamento padrão do MySQL (REPEATABLE READ): uma leitura
+        comum usa o snapshot do início da transação e NÃO enxerga pagamentos
+        recém-commitados por uma transação concorrente — mesmo já segurando o
+        lock da linha do orçamento. A locking read força a leitura da versão
+        mais recente já commitada e bloqueia inserções concorrentes na faixa.
+        """
+        if lock:
+            stmt = select(Payment.amount).where(
+                Payment.budget_id == budget_id,
+                Payment.status != PaymentStatus.CANCELED,
+            )
+            if exclude_payment_id is not None:
+                stmt = stmt.where(Payment.id != exclude_payment_id)
+            stmt = stmt.with_for_update()
+            rows = self.db.execute(stmt).scalars().all()
+            return sum((Decimal(r) for r in rows), Decimal("0"))
+
         stmt = select(func.coalesce(func.sum(Payment.amount), 0)).where(
             Payment.budget_id == budget_id,
             Payment.status != PaymentStatus.CANCELED,

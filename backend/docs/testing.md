@@ -62,17 +62,61 @@ To run the identical suite against a real MySQL schema (recommended before a
 production go-live), point `TEST_DATABASE_URL` at a **dedicated, disposable**
 database and run the suite. The schema is created/dropped automatically.
 
-```bash
-# create an isolated test schema (never your real one)
-mysql -u root -p -e "CREATE DATABASE clinic_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+The fastest way is the bundled throwaway MySQL (host port `3307`, data in RAM):
 
+```bash
+docker compose -f docker-compose.test.yml up -d        # wait until healthy
+export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+pytest
+docker compose -f docker-compose.test.yml down -v       # wipe when done
+```
+
+Or use any MySQL you already run:
+
+```bash
+mysql -u root -p -e "CREATE DATABASE clinic_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@localhost:3306/clinic_test"
 pytest
 ```
 
-> The suite uses `Base.metadata.create_all` for speed. To validate the Alembic
-> migrations themselves against MySQL, run `alembic upgrade head` against the
-> test schema separately (planned as a Phase 2 migration-smoke test).
+**Safety guard.** The suite refuses to run if `TEST_DATABASE_URL` does not look
+like a throwaway test database: the schema name must contain `test`, must not
+contain production markers (`prod`/`production`/`live`), and must not equal the
+application's configured `DATABASE_URL`. This makes it hard to point the
+destructive `create_all`/`drop_all` cycle at real data.
+
+#### `mysql_only` tests
+
+Some tests require real InnoDB row locks / `SELECT ... FOR UPDATE` and are
+marked `mysql_only`. They are **skipped automatically** on the default SQLite
+engine and run only when `TEST_DATABASE_URL` is MySQL:
+
+* `tests/integration/test_concurrency_finance.py` — concurrent payments cannot
+  exceed the budget total (anti-overpayment under contention).
+* `tests/integration/test_concurrency_inventory.py` — concurrent stock
+  movements never drive the balance negative; valid moves always log history.
+* `tests/integration/test_migrations.py` — Alembic migration smoke test.
+
+```bash
+# run ONLY the MySQL-specific tests
+export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+pytest -m mysql_only
+```
+
+### Alembic migration smoke test (real production schema path)
+
+`test_migrations.py` validates the **real** schema path — `alembic upgrade head`
+on a clean database (not `Base.metadata.create_all`) — then checks the core
+tables, indexes and foreign keys exist, and that `downgrade base` tears the
+schema down cleanly. It runs only against MySQL.
+
+You can also run it by hand against the test schema:
+
+```bash
+export DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+alembic upgrade head
+alembic downgrade base
+```
 
 ---
 
@@ -105,10 +149,36 @@ pytest --cov=app --cov-report=term-missing
 
 ### Coverage target
 
-Current overall coverage is ~75%, with the critical services and routes
-(auth, finance, inventory, appointments, medical records, users) covered well
-above that. We intentionally **do not** fail the build on a coverage gate yet;
-the Phase 2 target is `--cov-fail-under=80` once expense/report flows are added.
+Current overall coverage is **~81%** (SQLite run), with the critical services and
+routes (auth, finance, inventory, appointments, medical records, users,
+procedures) covered well above that. The 80% gate is now achievable:
+
+```bash
+pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+```
+
+We keep `--cov` **out of the default `addopts`** so the everyday `pytest` run
+stays fast and does not require `pytest-cov`; run the command above (e.g. in CI)
+to enforce the gate. The largest remaining gaps are the report aggregation
+queries and some procedure/patient repository branches.
+
+### Creating the initial admin
+
+The first ADMIN is bootstrapped with a CLI (idempotent — it will not create a
+second admin unless `--force` is given):
+
+```bash
+# reads INITIAL_ADMIN_NAME / INITIAL_ADMIN_EMAIL / INITIAL_ADMIN_PASSWORD from .env
+python -m app.cli.create_admin
+
+# or pass explicitly
+python -m app.cli.create_admin --name "Dra. Chefe" --email "chefe@clinic.com.br" --password "<strong>"
+```
+
+> The e-mail must use a public TLD (`.com`, `.com.br`, …). Reserved TLDs such as
+> `.local` / `.test` are rejected by the e-mail validator — `.env.example` ships
+> a valid `admin@clinic.com.br`. The CLI stores the password as an argon2 hash;
+> it is covered by `tests/integration/test_create_admin.py`.
 
 ---
 

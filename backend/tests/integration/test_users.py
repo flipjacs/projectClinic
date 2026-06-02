@@ -110,6 +110,65 @@ def test_service_blocks_downgrading_last_active_admin_role(db_session):
 
 
 # ---------------------------------------------------------------------------
+# Last-active-admin protection — reachable scenarios via the HTTP API
+#
+# Removing the *last* admin is only possible through self-deactivation /
+# self-downgrade (any acting admin is, by definition, still an active admin),
+# and those are blocked first. The HTTP layer therefore exercises the positive
+# side of the invariant: a non-last admin CAN be deactivated/downgraded, and the
+# system always keeps at least one active admin.
+# ---------------------------------------------------------------------------
+def test_admin_can_deactivate_another_admin_when_one_remains(
+    client, admin_user, db_session, session_factory
+):
+    second_admin = factories.create_user(
+        db_session, role=Role.ADMIN, email="second-admin@clinic-test.com"
+    )
+    headers = auth_headers(client, admin_user.email)
+
+    resp = client.patch(f"{API}/users/{second_admin.id}/deactivate", headers=headers)
+    assert resp.status_code == 200, resp.text
+
+    with session_factory() as s:
+        assert s.get(User, second_admin.id).is_active is False
+        # The acting admin remains active — the system still has an admin.
+        assert s.get(User, admin_user.id).is_active is True
+
+
+def test_admin_can_downgrade_another_admin_when_one_remains(
+    client, admin_user, db_session, session_factory
+):
+    second_admin = factories.create_user(
+        db_session, role=Role.ADMIN, email="downgrade-admin@clinic-test.com"
+    )
+    headers = auth_headers(client, admin_user.email)
+
+    resp = client.patch(
+        f"{API}/users/{second_admin.id}", headers=headers, json={"role": "dentist"}
+    )
+    assert resp.status_code == 200, resp.text
+
+    with session_factory() as s:
+        assert s.get(User, second_admin.id).role == Role.DENTIST
+        assert s.get(User, admin_user.id).role == Role.ADMIN
+
+
+def test_service_allows_deactivating_non_last_admin(db_session):
+    """Defense-in-depth guard must NOT fire while another active admin exists."""
+    from app.modules.users.service import UserService
+
+    admin_a = factories.create_user(db_session, role=Role.ADMIN, email="keep-admin@clinic-test.com")
+    admin_b = factories.create_user(db_session, role=Role.ADMIN, email="drop-admin@clinic-test.com")
+
+    service = UserService(db_session)
+    service.set_active(admin_b.id, active=False, current_user_id=admin_a.id)
+
+    db_session.expire_all()
+    assert db_session.get(User, admin_b.id).is_active is False
+    assert db_session.get(User, admin_a.id).is_active is True
+
+
+# ---------------------------------------------------------------------------
 # Data exposure
 # ---------------------------------------------------------------------------
 def test_user_list_does_not_expose_password_hash(client, admin_user, dentist_user):

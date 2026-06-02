@@ -89,6 +89,7 @@ class PatientService:
             if existing and existing.id != patient.id:
                 raise AlreadyExistsError("Já existe um paciente com este CPF")
 
+        before = {field: getattr(patient, field) for field in data}
         for field, value in data.items():
             setattr(patient, field, value)
 
@@ -100,6 +101,8 @@ class PatientService:
             entity_id=patient.id,
             summary="Paciente atualizado",
             metadata={"fields": sorted(data.keys())},
+            before=before,
+            after=dict(data),
         )
         self.db.commit()
         self.db.refresh(patient)

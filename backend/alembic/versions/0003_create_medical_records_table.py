@@ -103,10 +103,6 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index("ix_medical_records_patient_visit", table_name="medical_records")
-    op.drop_index("ix_medical_records_is_active", table_name="medical_records")
-    op.drop_index("ix_medical_records_visit_date", table_name="medical_records")
-    op.drop_index("ix_medical_records_appointment_id", table_name="medical_records")
-    op.drop_index("ix_medical_records_dentist_id", table_name="medical_records")
-    op.drop_index("ix_medical_records_patient_id", table_name="medical_records")
+    # drop_table remove índices/FKs atomicamente (evita o erro 1553 do MySQL ao
+    # tentar dropar um índice que dá suporte a uma foreign key).
     op.drop_table("medical_records")

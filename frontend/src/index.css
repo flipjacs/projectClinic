@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Foco consistente e acessível em toda a aplicação (dourado). */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold-400 ring-offset-1;
+  }
+}
+
+@layer utilities {
+  /* Scrollbar discreta para áreas internas. */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d4 transparent;
+  }
+}

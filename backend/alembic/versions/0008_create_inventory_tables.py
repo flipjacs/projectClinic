@@ -217,29 +217,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index(
-        "ix_inventory_movements_item_created", table_name="inventory_movements"
-    )
-    op.drop_index(
-        "ix_inventory_movements_created_at", table_name="inventory_movements"
-    )
-    op.drop_index(
-        "ix_inventory_movements_created_by_user_id",
-        table_name="inventory_movements",
-    )
-    op.drop_index(
-        "ix_inventory_movements_movement_type", table_name="inventory_movements"
-    )
-    op.drop_index(
-        "ix_inventory_movements_inventory_item_id",
-        table_name="inventory_movements",
-    )
+    # drop_table remove índices/FKs atomicamente (evita o erro 1553 do MySQL ao
+    # tentar dropar um índice que dá suporte a uma foreign key).
     op.drop_table("inventory_movements")
-
-    op.drop_index(
-        "ix_inventory_items_expiration_date", table_name="inventory_items"
-    )
-    op.drop_index("ix_inventory_items_is_active", table_name="inventory_items")
-    op.drop_index("ix_inventory_items_category", table_name="inventory_items")
-    op.drop_index("ix_inventory_items_name", table_name="inventory_items")
     op.drop_table("inventory_items")

@@ -60,12 +60,28 @@ class Settings(BaseSettings):
     def _validate_production_safety(self) -> "Settings":
         placeholder_secret = "change-me-use-a-strong-random-secret"
         if self.is_production:
+            # SECRET_KEY forte e não-placeholder.
             if placeholder_secret in self.secret_key.lower():
                 raise ValueError("SECRET_KEY de produção não pode usar o placeholder do exemplo")
+            # DEBUG desativado.
             if self.app_debug:
                 raise ValueError("APP_DEBUG deve ser false em produção")
+            # CORS restrito e explícito (sem curinga, sem lista vazia).
             if "*" in self.cors_origins:
                 raise ValueError("CORS_ORIGINS não pode conter '*' em produção")
+            if not self.cors_origins:
+                raise ValueError(
+                    "CORS_ORIGINS deve listar explicitamente as origens permitidas em produção"
+                )
+            # Banco de produção configurado e sem credenciais de exemplo.
+            uri = self.sqlalchemy_database_uri
+            if not self.database_url and self.db_password in ("", "clinic_password"):
+                raise ValueError(
+                    "Configure DATABASE_URL (ou DB_PASSWORD forte) em produção; "
+                    "as credenciais de exemplo não são permitidas"
+                )
+            if "clinic_password" in uri:
+                raise ValueError("A senha de exemplo 'clinic_password' não pode ser usada em produção")
         return self
 
     @computed_field  # type: ignore[misc]

@@ -111,6 +111,12 @@ class InventoryItemService:
             entity_type="inventory_item",
             entity_id=item.id,
             summary="Item de estoque criado",
+            after={
+                "name": item.name,
+                "category": item.category.value,
+                "current_quantity": str(item.current_quantity),
+                "minimum_quantity": str(item.minimum_quantity),
+            },
         )
         self.db.commit()
         self.db.refresh(item)
@@ -131,6 +137,7 @@ class InventoryItemService:
         if "unit_price" in data and data["unit_price"] is not None:
             data["unit_price"] = _money(data["unit_price"])
 
+        before = {field: getattr(item, field) for field in data}
         for field, value in data.items():
             setattr(item, field, value)
 
@@ -142,6 +149,8 @@ class InventoryItemService:
             entity_id=item.id,
             summary="Item de estoque atualizado",
             metadata={"fields": sorted(data.keys())},
+            before=before,
+            after=dict(data),
         )
         self.db.commit()
         self.db.refresh(item)
@@ -159,6 +168,8 @@ class InventoryItemService:
             entity_type="inventory_item",
             entity_id=item.id,
             summary="Item de estoque ativado" if active else "Item de estoque inativado",
+            before={"is_active": not active},
+            after={"is_active": active},
         )
         self.db.commit()
         self.db.refresh(item)
@@ -246,6 +257,7 @@ class InventoryMovementService:
         alterado nem a movimentação fique registrada.
         """
         try:
+            previous_quantity = item.current_quantity
             item.current_quantity = new_quantity
 
             movement = InventoryMovement(
@@ -268,6 +280,12 @@ class InventoryMovementService:
                     "movement_type": movement_type.value,
                     "quantity": str(quantity),
                     "resulting_quantity": str(new_quantity),
+                },
+                before={"current_quantity": str(previous_quantity)},
+                after={
+                    "current_quantity": str(new_quantity),
+                    "movement_type": movement_type.value,
+                    "quantity": str(quantity),
                 },
             )
             self.db.commit()

@@ -187,6 +187,12 @@ class BudgetService:
             entity_id=budget.id,
             summary="Orçamento criado",
             metadata={"status": budget.status.value, "total_amount": str(budget.total_amount)},
+            after={
+                "status": budget.status.value,
+                "total_amount": str(budget.total_amount),
+                "patient_id": budget.patient_id,
+                "dentist_id": budget.dentist_id,
+            },
         )
         self.db.commit()
         self.db.refresh(budget)
@@ -257,6 +263,7 @@ class BudgetService:
                 f"Transição inválida: {budget.status.value} → {new_status.value}"
             )
 
+        old_status = budget.status.value
         budget.status = new_status
         self.repo.save(budget)
         self.audit.record(
@@ -266,6 +273,8 @@ class BudgetService:
             entity_id=budget.id,
             summary=f"Status alterado para {new_status.value}",
             metadata={"status": new_status.value},
+            before={"status": old_status},
+            after={"status": new_status.value},
         )
         self.db.commit()
         self.db.refresh(budget)
@@ -301,6 +310,7 @@ class BudgetService:
                 "Orçamento rejeitado não pode mais transitar de status"
             )
 
+        old_status = budget.status.value
         budget.status = BudgetStatus.CANCELED
         if payload.reason:
             prefix = f"[cancelado] {payload.reason}"
@@ -315,6 +325,8 @@ class BudgetService:
             entity_type="budget",
             entity_id=budget.id,
             summary="Orçamento cancelado",
+            before={"status": old_status},
+            after={"status": BudgetStatus.CANCELED.value},
         )
         self.db.commit()
         self.db.refresh(budget)
@@ -414,9 +426,13 @@ class PaymentService:
                 f"Orçamento com status '{budget.status.value}' não pode receber pagamentos"
             )
 
+        # locking read: enxerga pagamentos concorrentes já commitados (ver
+        # docstring do repositório). A chamada acontece sempre dentro de uma
+        # transação que já segura o lock da linha do orçamento.
         already_allocated = self.repo.sum_not_canceled_for_budget(
             budget.id,
             exclude_payment_id=exclude_payment_id,
+            lock=True,
         )
         if _money(already_allocated + amount) > _money(budget.total_amount):
             raise ValidationError(
@@ -478,6 +494,12 @@ class PaymentService:
             entity_id=payment.id,
             summary="Pagamento criado",
             metadata={"status": payment.status.value, "amount": str(payment.amount)},
+            after={
+                "status": payment.status.value,
+                "amount": str(payment.amount),
+                "payment_method": payment.payment_method.value,
+                "budget_id": payment.budget_id,
+            },
         )
         self.db.commit()
         self.db.refresh(payment)
@@ -554,6 +576,7 @@ class PaymentService:
                     exclude_payment_id=payment.id,
                 )
 
+        old_status = payment.status.value
         payment.status = new_status
 
         if new_status == PaymentStatus.PAID:
@@ -571,6 +594,8 @@ class PaymentService:
             entity_id=payment.id,
             summary=f"Status alterado para {new_status.value}",
             metadata={"status": new_status.value},
+            before={"status": old_status, "amount": str(payment.amount)},
+            after={"status": new_status.value, "amount": str(payment.amount)},
         )
         self.db.commit()
         self.db.refresh(payment)
@@ -588,6 +613,7 @@ class PaymentService:
         if payment.status == PaymentStatus.CANCELED:
             return payment
 
+        old_status = payment.status.value
         payment.status = PaymentStatus.CANCELED
         payment.canceled_at = _now_utc()
         payment.cancellation_reason = payload.cancellation_reason
@@ -599,6 +625,8 @@ class PaymentService:
             entity_type="payment",
             entity_id=payment.id,
             summary="Pagamento cancelado",
+            before={"status": old_status, "amount": str(payment.amount)},
+            after={"status": PaymentStatus.CANCELED.value, "amount": str(payment.amount)},
         )
         self.db.commit()
         self.db.refresh(payment)

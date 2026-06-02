@@ -150,10 +150,13 @@ class MedicalRecordService:
                 patient_id=record.patient_id,
             )
 
+        before = {field: getattr(record, field) for field in data}
         for field, value in data.items():
             setattr(record, field, value)
 
         self.repo.save(record)
+        # Conteúdo clínico é altamente sensível: o diff é mascarado (apenas
+        # "mudou" + tamanho), nunca o texto em si (ver app.shared.masking).
         self.audit.record(
             actor_user_id=current_user.id,
             action="medical_record.update",
@@ -161,6 +164,8 @@ class MedicalRecordService:
             entity_id=record.id,
             summary="Prontuário atualizado",
             metadata={"fields": sorted(data.keys())},
+            before=before,
+            after=dict(data),
         )
         self.db.commit()
         self.db.refresh(record)

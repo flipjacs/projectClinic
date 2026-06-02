@@ -27,6 +27,17 @@ class AuditLog(Base):
     entity_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True, index=True)
     summary: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     metadata_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Diff mascarado da operação. Nunca armazena senha/hash; CPF/telefone/e-mail
+    # e conteúdo clínico são ofuscados antes de gravar (ver app.shared.masking).
+    changed_fields: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    masked_before: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    masked_after: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Origem da requisição (preenchido pelo middleware de contexto).
+    ip_address: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)
+    user_agent: Mapped[Optional[str]] = mapped_column(String(400), nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

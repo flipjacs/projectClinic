@@ -145,6 +145,42 @@ docker compose exec -it api python -m app.cli.create_admin
 
 > Após o primeiro admin, novos usuários (de qualquer role) devem ser criados pelo endpoint `POST /api/v1/users` por um admin autenticado.
 
+> ⚠️ O e-mail precisa ter um TLD público válido (`.com`, `.com.br`, …). TLDs
+> reservados como `.local` / `.test` são **rejeitados** pelo validador de e-mail.
+> O `.env.example` já traz um valor válido (`admin@clinic.com.br`). A senha é
+> sempre armazenada como hash argon2.
+
+### Proteção do último ADMIN
+
+O sistema garante que **nunca fique sem nenhum ADMIN ativo**:
+
+- um ADMIN **não pode** inativar a si próprio nem rebaixar o próprio role;
+- o último ADMIN ativo **não pode** ser inativado nem rebaixado para outro role
+  (guarda de defesa em profundidade no `UserService`, com `count_active_admins`);
+- outro ADMIN **pode** ser inativado/rebaixado normalmente desde que ainda reste
+  ao menos um ADMIN ativo.
+
+Na prática, a única forma de remover o "último" admin via HTTP seria a
+auto-inativação/auto-rebaixamento — ambos bloqueados primeiro. A guarda do último
+admin é, portanto, defesa em profundidade; ela é testada diretamente no serviço
+(`tests/integration/test_users.py`), e o lado positivo (inativar/rebaixar um
+admin não-último) é testado via HTTP.
+
+### Audit log
+
+Toda mutação sensível grava um registro em `audit_logs` com `actor_user_id`,
+`action`, `entity_type`, `entity_id`, `changed_fields`, `masked_before`,
+`masked_after`, `ip_address` e `user_agent` (IP/User-Agent capturados por
+middleware). O diff é **mascarado** antes de gravar (`app/shared/masking.py`):
+
+- senha e `password_hash` **nunca** são registrados (removidos por completo);
+- CPF, telefone, e-mail e CEP são ofuscados;
+- conteúdo clínico livre (diagnóstico, queixa, observações) é apenas marcado como
+  alterado, sem expor o texto.
+
+Cobertura em `tests/integration/test_audit.py` (inclui a garantia de que nenhum
+hash de senha jamais aparece em nenhuma coluna do audit).
+
 ---
 
 ## Testes
@@ -152,27 +188,99 @@ docker compose exec -it api python -m app.cli.create_admin
 Suíte de testes de integração que exercita o stack real da aplicação contra um
 banco de teste isolado (SQLite por padrão; MySQL via `TEST_DATABASE_URL`). Cobre
 autenticação, RBAC, invariantes financeiras, estoque, agenda, prontuário,
-privacidade de pacientes e audit log.
+privacidade de pacientes, audit log mascarado, concorrência (MySQL) e o smoke de
+migrations Alembic.
 
 ```bash
+# rápido, sem dependências externas (SQLite)
+pytest                                       # tudo
+pytest tests/integration                     # apenas integração
+pytest --cov=app --cov-report=term-missing --cov-fail-under=80   # com gate de cobertura
+
 # dentro do container
 docker compose exec api pytest
-
-# localmente
-pytest                                  # tudo
-pytest tests/integration                # apenas integração
-pytest --cov=app --cov-report=term-missing   # com cobertura
-
-# fidelidade total contra MySQL (schema descartável e dedicado)
-export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@localhost:3306/clinic_test"
-pytest
 ```
 
-> ⚠️ Os testes **nunca** rodam contra o banco de produção/desenvolvimento — cada
-> teste cria seu próprio banco descartável e sobrescreve `get_db`.
+### Testes reais contra MySQL
 
-Detalhes completos (estratégia de banco, diferenças SQLite × MySQL, variáveis de
-ambiente e instalação no Python 3.14) em [`docs/testing.md`](docs/testing.md).
+Os testes de concorrência (`SELECT ... FOR UPDATE`) e o smoke de Alembic só são
+fiéis no MySQL — estão marcados como `mysql_only` e são **pulados** no SQLite.
+
+```bash
+# sobe um MySQL descartável (porta 3307, dados em RAM)
+docker compose -f docker-compose.test.yml up -d        # aguarde "healthy"
+
+export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+pytest                  # suíte completa, incluindo mysql_only
+pytest -m mysql_only    # apenas os testes específicos de MySQL
+
+docker compose -f docker-compose.test.yml down -v       # limpa quando terminar
+```
+
+> ⚠️ Os testes **nunca** rodam contra o banco de produção/desenvolvimento. Cada
+> teste cria seu próprio banco descartável e sobrescreve `get_db`; além disso, a
+> suíte **recusa** rodar se `TEST_DATABASE_URL` não parecer um banco de teste
+> (o nome do schema precisa conter `test`, não pode conter `prod`/`live` e não
+> pode ser igual ao `DATABASE_URL` da aplicação).
+
+Detalhes completos (estratégia de banco, diferenças SQLite × MySQL, smoke de
+Alembic, marcador `mysql_only`, cobertura e instalação no Python 3.14) em
+[`docs/testing.md`](docs/testing.md).
+
+---
+
+## Integração contínua (CI)
+
+`.github/workflows/backend-ci.yml` roda em cada push/PR:
+
+| Job | O que faz |
+|-----|-----------|
+| `sqlite-tests` | instala dependências e roda a suíte rápida com **gate de cobertura ≥ 80%** |
+| `mysql-tests` | sobe **MySQL 8** como service, valida `alembic upgrade head` + `downgrade base`, e roda a suíte completa (incluindo `mysql_only`, concorrência e smoke de Alembic) com gate de 80% |
+| `dependency-audit` | roda `pip-audit` (consultivo, não bloqueia) |
+
+O CI **falha** se as migrations quebrarem ou se a cobertura cair abaixo de 80%.
+Segredos reais nunca vão para o workflow — os valores de `SECRET_KEY`/DB são
+apenas de teste. Para rodar localmente os mesmos comandos do CI:
+
+```bash
+# job sqlite
+pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+
+# job mysql
+docker compose -f docker-compose.test.yml up -d
+export TEST_DATABASE_URL="mysql+pymysql://clinic:clinic_password@127.0.0.1:3307/clinic_test"
+export DATABASE_URL="$TEST_DATABASE_URL"
+alembic upgrade head && alembic downgrade base
+pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+docker compose -f docker-compose.test.yml down -v
+```
+
+---
+
+## Saúde e observabilidade
+
+- `GET /health` — *liveness*: a aplicação está de pé (não toca o banco).
+- `GET /ready` — *readiness*: executa `SELECT 1`; retorna `503` se o banco
+  estiver indisponível. Leve e sem dados sensíveis.
+
+Logs técnicos (stdout) carregam um `request_id` por requisição (devolvido também
+no header `X-Request-ID`) e passam por um *scrubber* que redige senha, token,
+hash e CPF — defesa em profundidade para que PII **não** vaze em log. Erros
+inesperados retornam mensagem genérica (sem stack trace ao cliente) e são
+logados no servidor com o `request_id`. Detalhes em
+[`docs/architecture.md`](docs/architecture.md).
+
+---
+
+## Backup e go-live
+
+- **Backup/restore MySQL:** scripts em `scripts/backup_mysql.sh` /
+  `scripts/restore_mysql.sh` (usam variáveis de ambiente, sem senha hardcoded) e
+  estratégia em [`docs/backup.md`](docs/backup.md).
+- **Antes de usar com dados reais:** siga o
+  [`docs/pre_service_checklist.md`](docs/pre_service_checklist.md).
+- **Auditoria de dependências:** `pip-audit` (ver `requirements-dev.txt`).
 
 ---
 

@@ -41,3 +41,9 @@ htmlcov/
 # Logs
 *.log
 logs/
+
+# Database backups — contêm dados sensíveis, NUNCA versionar
+backups/
+*.sql
+*.sql.gz
+*.dump

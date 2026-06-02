@@ -92,10 +92,8 @@ def downgrade() -> None:
     op.drop_index("ix_appointments_scheduled_end", table_name="appointments")
     op.drop_index("ix_patients_created_at", table_name="patients")
 
-    op.drop_index("ix_audit_logs_entity_created", table_name="audit_logs")
-    op.drop_index("ix_audit_logs_created_at", table_name="audit_logs")
-    op.drop_index("ix_audit_logs_entity_id", table_name="audit_logs")
-    op.drop_index("ix_audit_logs_entity_type", table_name="audit_logs")
-    op.drop_index("ix_audit_logs_action", table_name="audit_logs")
-    op.drop_index("ix_audit_logs_actor_user_id", table_name="audit_logs")
+    # NOTE: do NOT drop the audit_logs indexes individually here. On MySQL the
+    # index ``ix_audit_logs_actor_user_id`` backs the FK to ``users`` and cannot
+    # be dropped while the constraint exists ("needed in a foreign key
+    # constraint"). ``drop_table`` removes the FK and all indexes atomically.
     op.drop_table("audit_logs")

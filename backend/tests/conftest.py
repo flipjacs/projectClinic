@@ -48,9 +48,56 @@ from app.main import app  # noqa: E402  (importing populates Base.metadata)
 API = settings.api_v1_prefix
 
 
+# ---------------------------------------------------------------------------
+# Test-database safety: never let the suite point at a production/dev database.
+# ---------------------------------------------------------------------------
+_FORBIDDEN_DB_TOKENS = ("prod", "production", "live")
+
+
+def _validate_test_database_url(url: str) -> None:
+    """Refuse to run against anything that does not look like a throwaway test DB.
+
+    Heuristics (defensive, fail-closed):
+      * the database/schema name must contain ``test``;
+      * it must not contain obvious production markers;
+      * it must not match the application's configured production DATABASE_URL.
+    """
+    lowered = url.lower()
+
+    # Never reuse the app's real configured database.
+    try:
+        if url.strip() == (settings.sqlalchemy_database_uri or "").strip():
+            raise RuntimeError(
+                "TEST_DATABASE_URL aponta para o MESMO banco da aplicação. "
+                "Use um schema dedicado e descartável (ex.: clinic_test)."
+            )
+    except Exception:  # settings may not build a URI in some envs; ignore.
+        pass
+
+    # Extract the path component (database name) after the last '/'.
+    db_name = lowered.rsplit("/", 1)[-1].split("?", 1)[0]
+
+    if any(token in db_name for token in _FORBIDDEN_DB_TOKENS):
+        raise RuntimeError(
+            f"TEST_DATABASE_URL parece apontar para produção (db={db_name!r}). Abortando."
+        )
+    if "test" not in db_name:
+        raise RuntimeError(
+            "TEST_DATABASE_URL precisa apontar para um banco de teste cujo nome "
+            f"contenha 'test' (recebido db={db_name!r}). Isso evita rodar a suíte "
+            "contra dados reais."
+        )
+
+
+def is_mysql() -> bool:
+    url = os.getenv("TEST_DATABASE_URL", "")
+    return url.startswith("mysql")
+
+
 def _make_engine(tmp_path) -> Engine:
     url = os.getenv("TEST_DATABASE_URL")
     if url:
+        _validate_test_database_url(url)
         return create_engine(url, future=True, pool_pre_ping=True)
 
     db_file = tmp_path / "test.db"
@@ -70,9 +117,32 @@ def _make_engine(tmp_path) -> Engine:
     return engine
 
 
+def pytest_configure(config):  # noqa: ANN001
+    config.addinivalue_line(
+        "markers",
+        "mysql_only: test only runs when TEST_DATABASE_URL points at MySQL "
+        "(skipped on the default SQLite engine).",
+    )
+
+
+def pytest_collection_modifyitems(config, items):  # noqa: ANN001
+    """Skip ``mysql_only`` tests unless we are running against MySQL."""
+    if is_mysql():
+        return
+    skip_marker = pytest.mark.skip(
+        reason="requires TEST_DATABASE_URL pointing at MySQL (mysql_only)"
+    )
+    for item in items:
+        if "mysql_only" in item.keywords:
+            item.add_marker(skip_marker)
+
+
 @pytest.fixture()
 def db_engine(tmp_path) -> Iterator[Engine]:
     engine = _make_engine(tmp_path)
+    # On MySQL, ensure a clean slate even if a previous run left tables behind.
+    if is_mysql():
+        Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     try:
         yield engine

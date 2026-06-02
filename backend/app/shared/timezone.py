@@ -13,17 +13,30 @@ from zoneinfo import ZoneInfo
 CLINIC_TZ = ZoneInfo("America/Sao_Paulo")
 
 
+# ---------------------------------------------------------------------------
+# Regra global de precisão (ver docs/architecture.md):
+# Todo datetime de domínio é normalizado para UTC e TRUNCADO em segundos
+# (microsecond=0). As colunas DATETIME do MySQL têm fsp=0 e arredondam os
+# microssegundos ao gravar; manter a fração causaria divergência entre o valor
+# enviado/comparado em memória e o valor lido do banco (ex.: detecção de
+# conflito de agenda no limite exato). Segundos bastam para o domínio clínico.
+# ---------------------------------------------------------------------------
+def normalize_precision(value: datetime) -> datetime:
+    """Trunca um datetime para precisão de segundos (microsegundos = 0)."""
+    return value.replace(microsecond=0)
+
+
 def now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(timezone.utc).replace(microsecond=0)
 
 
 def ensure_aware_utc(value: datetime, field_name: str = "datetime") -> datetime:
-    """Exige timezone explícito e normaliza para UTC antes de persistir/filtrar."""
+    """Exige timezone explícito e normaliza para UTC (precisão de segundos)."""
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError(
             f"{field_name} deve incluir timezone (ex.: 2026-06-01T10:00:00-03:00)"
         )
-    return value.astimezone(timezone.utc)
+    return value.astimezone(timezone.utc).replace(microsecond=0)
 
 
 def ensure_optional_aware_utc(
@@ -105,6 +118,7 @@ __all__ = [
     "CLINIC_TZ",
     "ensure_aware_utc",
     "ensure_optional_aware_utc",
+    "normalize_precision",
     "now_utc",
     "today_clinic",
     "day_window",

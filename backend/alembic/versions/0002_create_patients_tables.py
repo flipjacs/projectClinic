@@ -115,11 +115,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index("ix_patient_health_info_patient_id", table_name="patient_health_info")
+    # drop_table remove índices e FKs da tabela atomicamente. Dropar um índice
+    # que dá suporte a uma FK antes do drop_table falha no MySQL (erro 1553).
     op.drop_table("patient_health_info")
-
-    op.drop_index("ix_patients_is_active", table_name="patients")
-    op.drop_index("ix_patients_phone", table_name="patients")
-    op.drop_index("ix_patients_cpf", table_name="patients")
-    op.drop_index("ix_patients_name", table_name="patients")
     op.drop_table("patients")

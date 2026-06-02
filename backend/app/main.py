@@ -1,8 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.logging import get_logger, setup_logging
+from app.database.connection import get_db
 from app.modules.auth.routes import router as auth_router
 from app.modules.users.routes import router as users_router
 from app.modules.patients.routes import router as patients_router
@@ -13,9 +17,14 @@ from app.modules.finance.routes import router as finance_router
 from app.modules.inventory.routes import router as inventory_router
 from app.modules.reports.routes import router as reports_router
 from app.shared.exceptions import AppException
+from app.shared.request_context import RequestContextMiddleware
+
+logger = get_logger("app")
 
 
 def create_app() -> FastAPI:
+    setup_logging("DEBUG" if settings.app_debug else "INFO")
+
     app = FastAPI(
         title=settings.app_name,
         version="0.1.0",
@@ -24,6 +33,9 @@ def create_app() -> FastAPI:
         redoc_url="/redoc" if not settings.is_production else None,
         openapi_url="/openapi.json" if not settings.is_production else None,
     )
+
+    # Captura IP/User-Agent/request_id por request (audit + correlação de logs).
+    app.add_middleware(RequestContextMiddleware)
 
     if settings.cors_origins:
         app.add_middleware(
@@ -34,9 +46,29 @@ def create_app() -> FastAPI:
             allow_headers=["*"],
         )
 
+    @app.on_event("startup")
+    async def _on_startup() -> None:
+        logger.info(
+            "Aplicação iniciada: app_env=%s debug=%s db_driver=%s",
+            settings.app_env,
+            settings.app_debug,
+            settings.db_driver,
+        )
+
     @app.exception_handler(AppException)
     async def app_exception_handler(request: Request, exc: AppException) -> JSONResponse:
+        # Exceções de domínio carregam mensagens seguras (sem stack trace).
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+
+    @app.exception_handler(Exception)
+    async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+        # Erro inesperado: loga o detalhe no servidor (com request_id) e devolve
+        # uma mensagem genérica — NUNCA expõe stack trace ao cliente.
+        logger.exception("Erro inesperado em %s %s", request.method, request.url.path)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Erro interno do servidor"},
+        )
 
     @app.get("/", tags=["health"])
     async def root() -> dict:
@@ -48,7 +80,21 @@ def create_app() -> FastAPI:
 
     @app.get("/health", tags=["health"])
     async def health() -> dict:
+        """Liveness: a aplicação está de pé (não toca o banco)."""
         return {"status": "ok"}
+
+    @app.get("/ready", tags=["health"])
+    def ready(db: Session = Depends(get_db)) -> JSONResponse:
+        """Readiness: verifica conectividade com o banco de forma leve."""
+        try:
+            db.execute(text("SELECT 1"))
+        except Exception:  # noqa: BLE001
+            logger.warning("Readiness check falhou: banco indisponível")
+            return JSONResponse(
+                status_code=503,
+                content={"status": "unavailable", "database": "down"},
+            )
+        return JSONResponse(status_code=200, content={"status": "ready", "database": "up"})
 
     api_prefix = settings.api_v1_prefix
     app.include_router(auth_router, prefix=api_prefix)
