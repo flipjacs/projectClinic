@@ -101,13 +101,6 @@ export interface PaymentUpdateInput {
   notes: string | null;
 }
 
-export interface RevenueReport {
-  period_start: string;
-  period_end: string;
-  total_paid: MoneyValue;
-  number_of_payments: number;
-}
-
 export interface BudgetSettlement {
   budget_id: number;
   total_amount: MoneyValue;

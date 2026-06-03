@@ -9,8 +9,6 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import { ROLES } from "@/types/roles";
 import {
   getFinanceSummary,
-  getMonthlyRevenue,
-  getWeeklyRevenue,
   listPendingPayments,
   type PendingPaymentsParams,
 } from "../api/finance-api";
@@ -28,7 +26,6 @@ import {
   cancelPayment,
   changePaymentStatus,
   createPayment,
-  getPayment,
   listBudgetPayments,
   listPayments,
   updatePayment,
@@ -44,8 +41,6 @@ import type {
 export const financeKeys = {
   all: ["finance"] as const,
   summary: ["finance", "summary"] as const,
-  revenueWeekly: ["finance", "revenue", "weekly"] as const,
-  revenueMonthly: ["finance", "revenue", "monthly"] as const,
   pending: (params: PendingPaymentsParams) => ["finance", "pending", params] as const,
 };
 
@@ -60,7 +55,6 @@ export const budgetKeys = {
 export const paymentKeys = {
   all: ["payments"] as const,
   list: (params: ListPaymentsParams) => ["payments", "list", params] as const,
-  detail: (id: number) => ["payments", "detail", id] as const,
 };
 
 /** Invalida tudo que valores afetam (pagamento muda resumo, pendências, settlement). */
@@ -82,26 +76,6 @@ export function useFinanceSummary() {
   return useQuery({
     queryKey: financeKeys.summary,
     queryFn: getFinanceSummary,
-    enabled: isClinical,
-    staleTime: 60_000,
-  });
-}
-
-export function useWeeklyRevenue() {
-  const isClinical = useIsClinical();
-  return useQuery({
-    queryKey: financeKeys.revenueWeekly,
-    queryFn: getWeeklyRevenue,
-    enabled: isClinical,
-    staleTime: 60_000,
-  });
-}
-
-export function useMonthlyRevenue() {
-  const isClinical = useIsClinical();
-  return useQuery({
-    queryKey: financeKeys.revenueMonthly,
-    queryFn: getMonthlyRevenue,
     enabled: isClinical,
     staleTime: 60_000,
   });
@@ -211,14 +185,6 @@ export function usePayments(params: ListPaymentsParams) {
     queryKey: paymentKeys.list(params),
     queryFn: () => listPayments(params),
     placeholderData: keepPreviousData,
-  });
-}
-
-export function usePayment(id: number) {
-  return useQuery({
-    queryKey: paymentKeys.detail(id),
-    queryFn: () => getPayment(id),
-    enabled: Number.isFinite(id) && id > 0,
   });
 }
 

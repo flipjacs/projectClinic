@@ -23,11 +23,6 @@ export async function listProcedures(
   return data;
 }
 
-export async function getProcedure(id: number): Promise<Procedure> {
-  const { data } = await api.get<Procedure>(`/procedures/${id}`);
-  return data;
-}
-
 export async function createProcedure(input: ProcedureInput): Promise<Procedure> {
   const { data } = await api.post<Procedure>("/procedures", input);
   return data;

@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -79,10 +79,16 @@ export function PaymentsPage() {
         title="Pagamentos"
         description="Registre e acompanhe pagamentos da clínica."
         actions={
-          <Button onClick={() => navigate("/payments/new")}>
-            <Plus className="h-4 w-4" />
-            Registrar pagamento
-          </Button>
+          <>
+            <Button variant="ghost" onClick={() => navigate("/finance")}>
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
+            </Button>
+            <Button onClick={() => navigate("/payments/new")}>
+              <Plus className="h-4 w-4" />
+              Registrar pagamento
+            </Button>
+          </>
         }
       />
 

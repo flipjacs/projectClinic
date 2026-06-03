@@ -7,7 +7,6 @@ import {
 
 import {
   createProcedure,
-  getProcedure,
   listProcedures,
   setProcedureActive,
   updateProcedure,
@@ -20,7 +19,6 @@ export const procedureKeys = {
   all: ["procedures"] as const,
   list: (params: ListProceduresParams) => ["procedures", "list", params] as const,
   active: ["procedures", "active"] as const,
-  detail: (id: number) => ["procedures", "detail", id] as const,
 };
 
 export function useProcedures(params: ListProceduresParams) {
@@ -60,14 +58,6 @@ export function useProcedureCounts() {
     select: (d) => d.meta.total,
   });
   return { total, active };
-}
-
-export function useProcedure(id: number) {
-  return useQuery({
-    queryKey: procedureKeys.detail(id),
-    queryFn: () => getProcedure(id),
-    enabled: Number.isFinite(id) && id > 0,
-  });
 }
 
 export function useCreateProcedure() {

@@ -15,31 +15,6 @@ const moneyString = z
     "Use no máximo 2 casas decimais",
   );
 
-export const budgetItemSchema = z.object({
-  procedure_id: z.number().int().positive("Selecione o procedimento"),
-  quantity: z
-    .number()
-    .int()
-    .min(1, "Quantidade mínima 1")
-    .max(1000, "Quantidade muito alta"),
-  unit_price: moneyString.optional(),
-});
-
-export const budgetSchema = z.object({
-  patient_id: z.number().int().positive("Selecione o paciente"),
-  patient_name: z.string().nullable().optional(),
-  dentist_id: z.number().int().positive("Selecione o profissional"),
-  notes: z
-    .string()
-    .trim()
-    .max(4000, "Texto muito longo")
-    .optional()
-    .or(z.literal("")),
-  items: z.array(budgetItemSchema).min(1, "Adicione ao menos um procedimento"),
-});
-
-export type BudgetFormValues = z.infer<typeof budgetSchema>;
-
 export const paymentSchema = z.object({
   patient_id: z.number().int().positive("Selecione o paciente"),
   patient_name: z.string().nullable().optional(),

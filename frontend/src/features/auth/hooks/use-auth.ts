@@ -6,7 +6,7 @@ import type { User } from "@/types/api";
 import { getMe, login as loginApi } from "../api/auth-api";
 import type { LoginCredentials } from "../types/auth";
 
-export const ME_QUERY_KEY = ["auth", "me"] as const;
+const ME_QUERY_KEY = ["auth", "me"] as const;
 
 /**
  * Sessão de autenticação para a UI.

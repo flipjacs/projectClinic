@@ -55,8 +55,8 @@ export const NAV_SECTION_LABELS: Record<NavSection, string> = {
   admin: "Administração",
 };
 
-/** Itens visíveis para um determinado perfil. */
-export function navItemsForRole(role: Role | undefined): NavItemConfig[] {
+/** Itens visíveis para um determinado perfil (helper interno de navSectionsForRole). */
+function navItemsForRole(role: Role | undefined): NavItemConfig[] {
   if (!role) return [];
   return NAV_ITEMS.filter((item) => item.roles.includes(role));
 }

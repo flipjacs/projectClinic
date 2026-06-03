@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { ArrowLeft, FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -54,12 +54,18 @@ export function BudgetsPage() {
         title="Orçamentos"
         description="Orçamentos dos pacientes e seus status."
         actions={
-          canCreate ? (
-            <Button onClick={() => navigate("/budgets/new")}>
-              <FileText className="h-4 w-4" />
-              Novo orçamento
+          <>
+            <Button variant="ghost" onClick={() => navigate("/finance")}>
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
             </Button>
-          ) : undefined
+            {canCreate && (
+              <Button onClick={() => navigate("/budgets/new")}>
+                <FileText className="h-4 w-4" />
+                Novo orçamento
+              </Button>
+            )}
+          </>
         }
       />
 

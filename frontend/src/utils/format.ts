@@ -52,10 +52,3 @@ export function formatDateLong(value: string | null | undefined): string {
     ? d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })
     : "—";
 }
-
-export function formatTime(iso: string | null | undefined): string {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-}

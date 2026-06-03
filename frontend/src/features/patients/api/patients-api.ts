@@ -7,7 +7,6 @@ import type {
   PatientHealthInput,
   PatientInput,
   PatientListItem,
-  PatientSummary,
 } from "../types/patient";
 
 export interface ListPatientsParams {
@@ -44,11 +43,6 @@ export async function listPatients(
 
 export async function getPatient(id: number): Promise<Patient> {
   const { data } = await api.get<Patient>(`/patients/${id}`);
-  return data;
-}
-
-export async function getPatientSummary(id: number): Promise<PatientSummary> {
-  const { data } = await api.get<PatientSummary>(`/patients/${id}/summary`);
   return data;
 }
 

@@ -34,11 +34,6 @@ export async function listPayments(
   return data;
 }
 
-export async function getPayment(id: number): Promise<Payment> {
-  const { data } = await api.get<Payment>(`/payments/${id}`);
-  return data;
-}
-
 export async function listBudgetPayments(
   budgetId: number,
 ): Promise<Paginated<Payment>> {

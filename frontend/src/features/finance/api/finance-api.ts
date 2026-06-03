@@ -1,19 +1,9 @@
 import { api } from "@/lib/api";
 import type { Paginated } from "@/types/api";
-import type { FinanceSummary, Payment, RevenueReport } from "../types/finance";
+import type { FinanceSummary, Payment } from "../types/finance";
 
 export async function getFinanceSummary(): Promise<FinanceSummary> {
   const { data } = await api.get<FinanceSummary>("/finance/summary");
-  return data;
-}
-
-export async function getWeeklyRevenue(): Promise<RevenueReport> {
-  const { data } = await api.get<RevenueReport>("/finance/revenue/weekly");
-  return data;
-}
-
-export async function getMonthlyRevenue(): Promise<RevenueReport> {
-  const { data } = await api.get<RevenueReport>("/finance/revenue/monthly");
   return data;
 }
 

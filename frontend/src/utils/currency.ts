@@ -21,11 +21,3 @@ export function toMoneyPayload(value: string | number): string {
   if (!Number.isFinite(n)) return "0.00";
   return n.toFixed(2);
 }
-
-export function addMoney(a: MoneyValue, b: MoneyValue): number {
-  return Math.round((moneyToNumber(a) + moneyToNumber(b)) * 100) / 100;
-}
-
-export function multiplyMoney(value: MoneyValue, quantity: number): number {
-  return Math.round(moneyToNumber(value) * quantity * 100) / 100;
-}

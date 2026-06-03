@@ -65,8 +65,3 @@ export interface PatientHealthInput {
   medication_description?: string | null;
   health_observations?: string | null;
 }
-
-export interface PatientSummary {
-  patient: Patient;
-  health_info: PatientHealthInfo | null;
-}
