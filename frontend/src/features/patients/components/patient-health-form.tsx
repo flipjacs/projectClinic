@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { useRef } from "react";
+import { Controller, useForm, type FieldErrors } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/stores/toast-store";
 import { healthSchema, type HealthFormValues } from "../schemas/patient-schema";
 import { HealthConditionSelector } from "./health-condition-selector";
 
@@ -66,6 +68,20 @@ export function PatientHealthForm({
   const hasAllergy = watch("has_allergy");
   const usesMedication = watch("uses_medication");
 
+  const diseaseGroupRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Feedback quando a validação barra o submit. O RHF só consegue focar campos
+   * registrados (textareas) — o grupo de doença é um controle customizado sem
+   * `ref`, então damos uma mensagem clara e rolamos até ele manualmente.
+   */
+  function onInvalid(formErrors: FieldErrors<HealthFormValues>) {
+    toast.error("Revise os campos destacados antes de salvar.");
+    if (formErrors.disease_conditions || formErrors.disease_other_text) {
+      diseaseGroupRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
   function handleDiseaseToggle(next: boolean) {
     if (!next) {
       const v = getValues();
@@ -85,8 +101,8 @@ export function PatientHealthForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-      <div className="space-y-3">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-5" noValidate>
+      <div className="space-y-3" ref={diseaseGroupRef}>
         <Toggle
           label="Possui doença / condição"
           checked={hasDisease}
@@ -126,7 +142,12 @@ export function PatientHealthForm({
       </div>
 
       <div className="space-y-3">
-        <Toggle label="Possui alergia" {...register("has_allergy")} />
+        <Toggle
+          label="Possui alergia"
+          checked={hasAllergy}
+          aria-expanded={hasAllergy}
+          onChange={(e) => setValue("has_allergy", e.target.checked, { shouldValidate: false })}
+        />
         {hasAllergy && (
           <Textarea
             label="Descrição da alergia"
@@ -138,7 +159,12 @@ export function PatientHealthForm({
       </div>
 
       <div className="space-y-3">
-        <Toggle label="Usa medicação contínua" {...register("uses_medication")} />
+        <Toggle
+          label="Usa medicação contínua"
+          checked={usesMedication}
+          aria-expanded={usesMedication}
+          onChange={(e) => setValue("uses_medication", e.target.checked, { shouldValidate: false })}
+        />
         {usesMedication && (
           <Textarea
             label="Descrição da medicação"
