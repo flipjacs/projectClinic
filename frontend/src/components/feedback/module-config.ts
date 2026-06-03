@@ -2,20 +2,15 @@ import {
   BarChart3,
   Bell,
   CalendarClock,
-  ClipboardList,
-  Coins,
   FileSpreadsheet,
   History,
   Package,
   PackageMinus,
-  Receipt,
   ShieldCheck,
-  Stethoscope,
   TrendingDown,
   UserCog,
   UserPlus,
   Users,
-  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,26 +36,6 @@ export interface ModuleConfig {
  * um "em construção" genérico.
  */
 export const MODULE_PLACEHOLDERS: Record<string, ModuleConfig> = {
-  procedures: {
-    title: "Procedimentos",
-    description: "Catálogo de procedimentos, valores e tempo médio de execução.",
-    cta: "Novo procedimento",
-    features: [
-      { icon: Stethoscope, title: "Catálogo de procedimentos", text: "Cadastre os procedimentos oferecidos pela clínica." },
-      { icon: Coins, title: "Tabela de valores", text: "Defina preços de referência para orçamentos e cobranças." },
-      { icon: ClipboardList, title: "Vínculo com atendimentos", text: "Associe procedimentos às consultas e ao prontuário." },
-    ],
-  },
-  finance: {
-    title: "Financeiro",
-    description: "Orçamentos, pagamentos e fluxo de caixa da clínica.",
-    cta: "Registrar pagamento",
-    features: [
-      { icon: Receipt, title: "Orçamentos", text: "Monte orçamentos a partir dos procedimentos do paciente." },
-      { icon: Wallet, title: "Registrar pagamento", text: "Lance recebimentos e acompanhe pendências em aberto." },
-      { icon: TrendingDown, title: "Fluxo de caixa", text: "Visão de entradas e saídas por período." },
-    ],
-  },
   inventory: {
     title: "Estoque",
     description: "Controle de materiais, entradas, saídas e validade.",

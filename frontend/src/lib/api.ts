@@ -48,6 +48,19 @@ export function toApiError(error: unknown): ApiError {
   return { status: 0, message: "Não foi possível concluir a operação." };
 }
 
+/**
+ * Extrai a mensagem de domínio (`detail` string) de um erro do backend, quando
+ * houver. Erros estruturais do FastAPI (validação de schema) vêm como lista —
+ * esses NÃO são retornados, para nunca exibir detalhe técnico cru ao usuário.
+ */
+export function apiErrorDetail(error: unknown): string | null {
+  if (axios.isAxiosError(error)) {
+    const detail = (error.response?.data as { detail?: unknown } | undefined)?.detail;
+    if (typeof detail === "string" && detail.trim()) return detail.trim();
+  }
+  return null;
+}
+
 function messageForStatus(status: number): string {
   switch (status) {
     case 0:

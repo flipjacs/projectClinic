@@ -130,3 +130,50 @@ Revisado em: 2026-06-02
 - [ ] Verificação visual com backend online pendente.
 
 **Veredito:** aprovado com ressalvas (gap de listagem de dentistas para recepção + testes).
+
+---
+
+## Fase 7 — Procedimentos & Financeiro
+
+Revisado em: 2026-06-02
+
+### Build & qualidade
+- [x] `npm run build` e `npm run lint` limpos.
+- [x] Sem `console.*`/`localStorage`/`any`/`dangerouslySetInnerHTML` nos módulos.
+- [x] `total_amount` nunca é enviado (somente exibido) — backend calcula.
+- [x] Código morto removido (placeholders `procedures`/`finance` em module-config).
+- [x] Money tratado como `MoneyValue` (string|number) via `utils/currency`.
+
+### Rotas
+- [x] `/procedures` (CLINICAL — ver/gerenciar catálogo).
+- [x] `/finance` (ALL — resumo só clínico; recepção vê pendências/pagamentos).
+- [x] `/budgets` (ALL), `/budgets/new` (CLINICAL), `/budgets/:budgetId` (ALL).
+- [x] `/payments` (ALL), `/payments/new` (ALL).
+
+### Integração (contratos reais)
+- [x] Procedures: POST/GET/PATCH + activate/deactivate.
+- [x] Budgets: create/list/get/approve/reject/cancel/settlement; itens `{procedure_id, quantity, unit_price?}`.
+- [x] Payments: create/list/get/cancel; `/budgets/{id}/payments`; `/finance/pending-payments`.
+- [x] Finance: `/finance/summary` e `/revenue/*` (clínico).
+- [x] 409 → conflito; **422 (pagamento > orçamento)** → "Este pagamento ultrapassa o valor do orçamento."; 403 → "Acesso restrito"; 401 → logout.
+
+### Permissões
+- [x] Procedimentos: criar/editar/ativar = ADMIN/DENTIST.
+- [x] Orçamentos: criar/aprovar/rejeitar/cancelar = ADMIN/DENTIST; ver = todos.
+- [x] Pagamentos: criar/ver = todos; cancelar = ADMIN/DENTIST.
+- [x] Summary/revenue = ADMIN/DENTIST (cards escondidos para RECEPTIONIST).
+
+### Fluxos / estados
+- [x] Criar/editar/(in)ativar procedimento (modal).
+- [x] Criar orçamento com itens + total estimado ("o total final é calculado pelo sistema").
+- [x] Aprovar/Rejeitar/Cancelar (com motivo) orçamento.
+- [x] Registrar pagamento (incl. parcial) e cancelar (com motivo).
+- [x] Settlement (total/pago/pendente) + pendências no hub.
+- [x] Loading (skeleton), erro (retry), vazio em todas as listas.
+
+### Pendências / riscos
+- [ ] Testes automatizados (Vitest/RTL) ainda não configurados.
+- [ ] Verificação visual com backend online pendente.
+- [ ] Reuso: `PatientSelect`/`useDentistOptions` importados de `features/appointments` (candidatos a mover para `components/` compartilhado).
+
+**Veredito:** aprovado com ressalvas (testes + verificação visual).

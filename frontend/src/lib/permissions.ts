@@ -42,7 +42,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
   { key: "appointments", label: "Agenda", path: "/appointments", icon: Calendar, roles: ALL, section: "main" },
   { key: "medical-records", label: "Prontuários", path: "/medical-records", icon: ClipboardList, roles: CLINICAL, section: "main" },
   { key: "procedures", label: "Procedimentos", path: "/procedures", icon: Stethoscope, roles: CLINICAL, section: "main" },
-  { key: "finance", label: "Financeiro", path: "/finance", icon: Wallet, roles: [ROLES.ADMIN], section: "main" },
+  { key: "finance", label: "Financeiro", path: "/finance", icon: Wallet, roles: ALL, section: "main" },
   { key: "inventory", label: "Estoque", path: "/inventory", icon: Package, roles: ALL, section: "main" },
   { key: "reports", label: "Relatórios", path: "/reports", icon: PieChart, roles: CLINICAL, section: "main" },
   { key: "users", label: "Usuários", path: "/users", icon: Users, roles: [ROLES.ADMIN], section: "admin" },

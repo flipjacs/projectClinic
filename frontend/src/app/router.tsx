@@ -85,6 +85,35 @@ const AppointmentDetailsPage = lazy(() =>
     default: m.AppointmentDetailsPage,
   })),
 );
+const ProceduresPage = lazy(() =>
+  import("@/features/procedures/pages/procedures-page").then((m) => ({
+    default: m.ProceduresPage,
+  })),
+);
+const FinancePage = lazy(() =>
+  import("@/features/finance/pages/finance-page").then((m) => ({ default: m.FinancePage })),
+);
+const BudgetsPage = lazy(() =>
+  import("@/features/finance/pages/budgets-page").then((m) => ({ default: m.BudgetsPage })),
+);
+const BudgetCreatePage = lazy(() =>
+  import("@/features/finance/pages/budget-create-page").then((m) => ({
+    default: m.BudgetCreatePage,
+  })),
+);
+const BudgetDetailsPage = lazy(() =>
+  import("@/features/finance/pages/budget-details-page").then((m) => ({
+    default: m.BudgetDetailsPage,
+  })),
+);
+const PaymentsPage = lazy(() =>
+  import("@/features/finance/pages/payments-page").then((m) => ({ default: m.PaymentsPage })),
+);
+const PaymentCreatePage = lazy(() =>
+  import("@/features/finance/pages/payment-create-page").then((m) => ({
+    default: m.PaymentCreatePage,
+  })),
+);
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -153,19 +182,31 @@ export const router = createBrowserRouter([
       },
       {
         path: "procedures",
-        element: (
-          <RoleGuard allowed={CLINICAL_ROLES}>
-            <PlaceholderPage moduleKey="procedures" />
-          </RoleGuard>
-        ),
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<ProceduresPage />} />,
       },
       {
         path: "finance",
-        element: (
-          <RoleGuard allowed={[ROLES.ADMIN]}>
-            <PlaceholderPage moduleKey="finance" />
-          </RoleGuard>
-        ),
+        element: <RoleGuard allowed={ALL_ROLES} children={<FinancePage />} />,
+      },
+      {
+        path: "budgets",
+        element: <RoleGuard allowed={ALL_ROLES} children={<BudgetsPage />} />,
+      },
+      {
+        path: "budgets/new",
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<BudgetCreatePage />} />,
+      },
+      {
+        path: "budgets/:budgetId",
+        element: <RoleGuard allowed={ALL_ROLES} children={<BudgetDetailsPage />} />,
+      },
+      {
+        path: "payments",
+        element: <RoleGuard allowed={ALL_ROLES} children={<PaymentsPage />} />,
+      },
+      {
+        path: "payments/new",
+        element: <RoleGuard allowed={ALL_ROLES} children={<PaymentCreatePage />} />,
       },
       {
         path: "inventory",
