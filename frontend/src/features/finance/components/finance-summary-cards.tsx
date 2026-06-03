@@ -20,32 +20,39 @@ export function FinanceSummaryCards() {
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) {
+    return (
+      <ErrorState
+        title="Não foi possível carregar o resumo financeiro"
+        onRetry={() => refetch()}
+      />
+    );
+  }
   if (!data) return null;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Recebido no mês"
+        label="Receita do mês"
         value={formatMoney(data.total_paid_current_month)}
         icon={TrendingUp}
         highlight
-        hint={`${data.number_of_paid_payments} pagamento(s) no total`}
+        hint={`${data.number_of_paid_payments} pagamento(s) recebido(s)`}
       />
       <StatCard
-        label="Recebido na semana"
+        label="Receita da semana"
         value={formatMoney(data.total_paid_current_week)}
         icon={CircleDollarSign}
       />
       <StatCard
-        label="Pendente"
+        label="Valores em aberto"
         value={formatMoney(data.total_pending)}
         icon={Clock}
         highlight
-        hint={`${data.number_of_pending_payments} pendência(s)`}
+        hint={`${data.number_of_pending_payments} pagamento(s) pendente(s)`}
       />
       <StatCard
-        label="Cancelado"
+        label="Cancelados"
         value={formatMoney(data.total_canceled)}
         icon={Wallet}
       />

@@ -4,6 +4,7 @@ import type { KeyboardEvent } from "react";
 import { formatMoney } from "@/utils/currency";
 import { formatDate } from "@/utils/format";
 import type { Budget } from "../types/finance";
+import { BudgetMobileCard } from "./budget-mobile-card";
 import { BudgetStatusBadge } from "./budget-status-badge";
 
 interface BudgetsTableProps {
@@ -20,8 +21,10 @@ export function BudgetsTable({ budgets, onOpen }: BudgetsTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-white">
-      <table className="min-w-full divide-y divide-line">
+    <>
+      {/* Desktop: tabela */}
+      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-white sm:block">
+        <table className="min-w-full divide-y divide-line">
         <thead className="bg-graphite-50">
           <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
             <th className="px-5 py-3">Paciente</th>
@@ -61,7 +64,15 @@ export function BudgetsTable({ budgets, onOpen }: BudgetsTableProps) {
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+        </table>
+      </div>
+
+      {/* Mobile: cards */}
+      <div className="space-y-3 sm:hidden">
+        {budgets.map((b) => (
+          <BudgetMobileCard key={b.id} budget={b} onOpen={onOpen} />
+        ))}
+      </div>
+    </>
   );
 }

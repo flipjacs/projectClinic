@@ -84,6 +84,16 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   other: "Outro",
 };
 
+/** Labels curtas para colunas/badges compactos (a tabela e os cards mobile). */
+export const PAYMENT_METHOD_SHORT_LABELS: Record<PaymentMethod, string> = {
+  cash: "Dinheiro",
+  pix: "PIX",
+  credit_card: "Crédito",
+  debit_card: "Débito",
+  bank_transfer: "Transferência",
+  other: "Outro",
+};
+
 export const PAYMENT_METHOD_ORDER: PaymentMethod[] = [
   "pix",
   "cash",

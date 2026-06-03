@@ -40,6 +40,28 @@ export function useActiveProcedures() {
   });
 }
 
+/**
+ * Contagens do catálogo (total / ativos) para os cards de resumo. Usa
+ * `page_size: 1` e lê apenas `meta.total` — duas chamadas enxutas e cacheadas,
+ * independentes do filtro/paginação da listagem. Compartilham o prefixo
+ * `["procedures"]`, então são invalidadas junto nas mutações.
+ */
+export function useProcedureCounts() {
+  const total = useQuery({
+    queryKey: ["procedures", "count", "all"] as const,
+    queryFn: () => listProcedures({ includeInactive: true, page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  const active = useQuery({
+    queryKey: ["procedures", "count", "active"] as const,
+    queryFn: () => listProcedures({ includeInactive: false, page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  return { total, active };
+}
+
 export function useProcedure(id: number) {
   return useQuery({
     queryKey: procedureKeys.detail(id),

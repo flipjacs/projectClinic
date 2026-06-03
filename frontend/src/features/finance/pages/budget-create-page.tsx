@@ -27,7 +27,7 @@ export function BudgetCreatePage() {
     <>
       <PageHeader
         title="Novo orçamento"
-        description="Selecione o paciente, o profissional e os procedimentos."
+        description="Monte o plano de tratamento com os procedimentos necessários."
         actions={
           <Button variant="ghost" onClick={() => navigate("/budgets")}>
             <ArrowLeft className="h-4 w-4" />

@@ -51,7 +51,10 @@ export type PatientFormValues = z.infer<typeof patientSchema>;
 export const healthSchema = z
   .object({
     has_disease: z.boolean(),
-    disease_description: z.string().trim().max(2000).optional().or(z.literal("")),
+    // Condições estruturadas — serializadas em `disease_description` no envio.
+    disease_conditions: z.array(z.string()).default([]),
+    disease_other_enabled: z.boolean().default(false),
+    disease_other_text: z.string().trim().max(2000).default(""),
     has_allergy: z.boolean(),
     allergy_description: z.string().trim().max(2000).optional().or(z.literal("")),
     uses_medication: z.boolean(),
@@ -59,10 +62,27 @@ export const healthSchema = z
     health_observations: z.string().trim().max(4000).optional().or(z.literal("")),
   })
   .superRefine((val, ctx) => {
-    // Se a flag está marcada, a descrição correspondente é obrigatória
+    if (val.has_disease) {
+      const hasOther = val.disease_other_enabled && val.disease_other_text.trim().length > 0;
+      if (val.disease_conditions.length === 0 && !hasOther) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["disease_conditions"],
+          message: "Selecione pelo menos uma condição ou preencha 'Outra condição'.",
+        });
+      }
+      if (val.disease_other_enabled && !val.disease_other_text.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["disease_other_text"],
+          message: "Informe qual é a outra condição.",
+        });
+      }
+    }
+
+    // Alergia e medicação: descrição obrigatória quando a flag está marcada
     // (espelha a regra de coerência do backend).
-    const pairs: [boolean, string, "disease_description" | "allergy_description" | "medication_description"][] = [
-      [val.has_disease, val.disease_description ?? "", "disease_description"],
+    const pairs: [boolean, string, "allergy_description" | "medication_description"][] = [
       [val.has_allergy, val.allergy_description ?? "", "allergy_description"],
       [val.uses_medication, val.medication_description ?? "", "medication_description"],
     ];

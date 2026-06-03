@@ -43,6 +43,7 @@ export function CancelReasonDialog({
         <Textarea
           label="Motivo (opcional)"
           rows={3}
+          placeholder="Informe o motivo do cancelamento"
           error={errors.reason?.message}
           {...register("reason")}
         />

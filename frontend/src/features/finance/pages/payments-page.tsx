@@ -5,35 +5,37 @@ import { useNavigate } from "react-router-dom";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { PageHeader } from "@/components/layout/page-header";
+import { SectionTitle } from "@/components/layout/section-title";
 import { Button } from "@/components/ui/button";
-import { Card, CardBody } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PatientSelect } from "@/features/appointments/components/patient-select";
 import { useAuth } from "@/features/auth/hooks/use-auth";
-import { toast } from "@/stores/toast-store";
 import { ROLES } from "@/types/roles";
-import { PAYMENT_STATUS_LABELS, PAYMENT_STATUS_ORDER, financeErrorMessage } from "../constants";
+import { financeErrorMessage } from "../constants";
 import { CancelReasonDialog } from "../components/cancel-reason-dialog";
 import { ChangePaymentStatusDialog } from "../components/change-payment-status-dialog";
 import { EditPaymentDialog } from "../components/edit-payment-dialog";
+import { FinanceSummaryCards } from "../components/finance-summary-cards";
+import { PaymentFilters, type PaymentFiltersValue } from "../components/payment-filters";
 import { PaymentsTable } from "../components/payments-table";
 import { useCancelPayment, usePayments } from "../hooks/use-finance";
-import type { Payment, PaymentStatus } from "../types/finance";
+import { toast } from "@/stores/toast-store";
+import type { Payment } from "../types/finance";
 
 const PAGE_SIZE = 20;
-const statusOptions = [
-  { value: "", label: "Todos" },
-  ...PAYMENT_STATUS_ORDER.map((s) => ({ value: s, label: PAYMENT_STATUS_LABELS[s] })),
-];
+
+const INITIAL_FILTERS: PaymentFiltersValue = {
+  status: "",
+  patientId: null,
+  from: "",
+  to: "",
+};
 
 export function PaymentsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const canCancel = user?.role === ROLES.ADMIN || user?.role === ROLES.DENTIST;
+  const isClinical = user?.role === ROLES.ADMIN || user?.role === ROLES.DENTIST;
 
-  const [status, setStatus] = useState<PaymentStatus | "">("");
-  const [patientId, setPatientId] = useState<number | null>(null);
+  const [filters, setFilters] = useState<PaymentFiltersValue>(INITIAL_FILTERS);
   const [page, setPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState<Payment | null>(null);
   const [statusTarget, setStatusTarget] = useState<Payment | null>(null);
@@ -41,14 +43,21 @@ export function PaymentsPage() {
 
   const cancelMutation = useCancelPayment(cancelTarget?.id ?? 0);
 
+  function updateFilters(next: Partial<PaymentFiltersValue>) {
+    setFilters((f) => ({ ...f, ...next }));
+    setPage(1);
+  }
+
   const params = useMemo(
     () => ({
-      status: status || undefined,
-      patientId: patientId ?? undefined,
+      status: filters.status || undefined,
+      patientId: filters.patientId ?? undefined,
+      from: filters.from || undefined,
+      to: filters.to || undefined,
       page,
       pageSize: PAGE_SIZE,
     }),
-    [status, patientId, page],
+    [filters, page],
   );
 
   const { data, isLoading, isError, isFetching, refetch } = usePayments(params);
@@ -68,7 +77,7 @@ export function PaymentsPage() {
     <>
       <PageHeader
         title="Pagamentos"
-        description="Registro e acompanhamento dos pagamentos da clínica."
+        description="Registre e acompanhe pagamentos da clínica."
         actions={
           <Button onClick={() => navigate("/payments/new")}>
             <Plus className="h-4 w-4" />
@@ -77,29 +86,14 @@ export function PaymentsPage() {
         }
       />
 
-      <Card className="mb-4">
-        <CardBody>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Select
-              label="Status"
-              options={statusOptions}
-              value={status}
-              onChange={(e) => {
-                setStatus(e.target.value as PaymentStatus | "");
-                setPage(1);
-              }}
-            />
-            <PatientSelect
-              label="Paciente"
-              value={patientId}
-              onChange={(p) => {
-                setPatientId(p?.id ?? null);
-                setPage(1);
-              }}
-            />
-          </div>
-        </CardBody>
-      </Card>
+      {isClinical && (
+        <section className="mb-6">
+          <SectionTitle>Resumo financeiro</SectionTitle>
+          <FinanceSummaryCards />
+        </section>
+      )}
+
+      <PaymentFilters value={filters} onChange={updateFilters} />
 
       {isLoading ? (
         <div className="space-y-2">
@@ -108,7 +102,10 @@ export function PaymentsPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState
+          title="Não foi possível carregar os pagamentos"
+          onRetry={() => refetch()}
+        />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
           title="Nenhum pagamento encontrado"
@@ -118,10 +115,10 @@ export function PaymentsPage() {
         <>
           <PaymentsTable
             payments={data.items}
-            canCancel={canCancel}
+            canCancel={isClinical}
             onCancel={setCancelTarget}
-            onChangeStatus={canCancel ? setStatusTarget : undefined}
-            onEdit={canCancel ? setEditTarget : undefined}
+            onChangeStatus={isClinical ? setStatusTarget : undefined}
+            onEdit={isClinical ? setEditTarget : undefined}
           />
           <div className="mt-4 flex items-center justify-between text-sm text-ink-mute">
             <span>
@@ -157,7 +154,7 @@ export function PaymentsPage() {
       {cancelTarget && (
         <CancelReasonDialog
           title="Cancelar pagamento"
-          description={`${cancelTarget.patient.name} · ${cancelTarget.id}`}
+          description={`${cancelTarget.patient.name} · pagamento #${cancelTarget.id}`}
           confirmLabel="Cancelar pagamento"
           isLoading={cancelMutation.isPending}
           onConfirm={confirmCancel}

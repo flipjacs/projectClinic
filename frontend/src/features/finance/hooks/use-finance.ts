@@ -125,6 +125,40 @@ export function useBudgets(params: ListBudgetsParams) {
   });
 }
 
+/**
+ * Contagens por status para os cards de resumo da listagem. Cada chamada usa
+ * `page_size: 1` e lê só `meta.total` — enxutas e cacheadas. Compartilham o
+ * prefixo `["budgets"]`, então são invalidadas junto nas mutações de orçamento.
+ */
+export function useBudgetCounts() {
+  const draft = useQuery({
+    queryKey: ["budgets", "count", "draft"] as const,
+    queryFn: () => listBudgets({ status: "draft", page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  const approved = useQuery({
+    queryKey: ["budgets", "count", "approved"] as const,
+    queryFn: () => listBudgets({ status: "approved", page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  const rejected = useQuery({
+    queryKey: ["budgets", "count", "rejected"] as const,
+    queryFn: () => listBudgets({ status: "rejected", page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  const canceled = useQuery({
+    queryKey: ["budgets", "count", "canceled"] as const,
+    queryFn: () =>
+      listBudgets({ status: "canceled", includeCanceled: true, page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+    select: (d) => d.meta.total,
+  });
+  return { draft, approved, rejected, canceled };
+}
+
 export function useBudget(id: number) {
   return useQuery({
     queryKey: budgetKeys.detail(id),

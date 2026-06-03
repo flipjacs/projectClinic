@@ -49,7 +49,7 @@ export function ProcedureForm({
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Input
-          label="Preço base (R$)"
+          label="Valor base (R$)"
           inputMode="decimal"
           placeholder="0,00"
           error={errors.base_price?.message}
@@ -57,7 +57,7 @@ export function ProcedureForm({
         />
         <Input
           type="number"
-          label="Duração estimada (min)"
+          label="Duração média (min)"
           min={1}
           max={1440}
           placeholder="Opcional"

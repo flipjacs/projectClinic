@@ -14,6 +14,7 @@ import { toast } from "@/stores/toast-store";
 import { ROLES } from "@/types/roles";
 import { formatMoney } from "@/utils/currency";
 import { CancelReasonDialog } from "../components/cancel-reason-dialog";
+import { BudgetDetailsHeader } from "../components/budget-details-header";
 import { BudgetStatusBadge } from "../components/budget-status-badge";
 import { ChangePaymentStatusDialog } from "../components/change-payment-status-dialog";
 import { EditPaymentDialog } from "../components/edit-payment-dialog";
@@ -128,6 +129,10 @@ export function BudgetDetailsPage() {
         }
       />
 
+      <div className="mb-6">
+        <BudgetDetailsHeader budget={budget} />
+      </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
@@ -179,12 +184,20 @@ export function BudgetDetailsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Pagamentos do orçamento</CardTitle>
-              <Button size="sm" onClick={goToNewPayment}>
-                <Plus className="h-4 w-4" />
-                Registrar pagamento
-              </Button>
+              {!isTerminal && (
+                <Button size="sm" onClick={goToNewPayment}>
+                  <Plus className="h-4 w-4" />
+                  Registrar pagamento
+                </Button>
+              )}
             </CardHeader>
             <CardBody className="p-0">
+              {isTerminal && (
+                <p className="border-b border-line bg-graphite-50/60 px-5 py-3 text-sm text-ink-mute">
+                  Este orçamento não pode receber pagamentos porque está{" "}
+                  {budget.status === "canceled" ? "cancelado" : "rejeitado"}.
+                </p>
+              )}
               {payments.isLoading ? (
                 <div className="p-5">
                   <Loading label="Carregando pagamentos…" />

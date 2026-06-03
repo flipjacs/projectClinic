@@ -12,6 +12,10 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import { toApiError } from "@/lib/api";
 import { toast } from "@/stores/toast-store";
 import { ROLES } from "@/types/roles";
+import {
+  parseDiseaseConditions,
+  serializeDiseaseConditions,
+} from "../constants/health-conditions";
 import { PatientHealthCard } from "../components/patient-health-card";
 import { PatientHealthForm } from "../components/patient-health-form";
 import { PatientSummaryCard } from "../components/patient-summary-card";
@@ -58,7 +62,13 @@ export function PatientDetailsPage() {
     try {
       await saveHealth.mutateAsync({
         has_disease: values.has_disease,
-        disease_description: values.has_disease ? values.disease_description || null : null,
+        disease_description: values.has_disease
+          ? serializeDiseaseConditions({
+              conditions: values.disease_conditions,
+              otherEnabled: values.disease_other_enabled,
+              otherText: values.disease_other_text,
+            })
+          : null,
         has_allergy: values.has_allergy,
         allergy_description: values.has_allergy ? values.allergy_description || null : null,
         uses_medication: values.uses_medication,
@@ -154,15 +164,20 @@ export function PatientDetailsPage() {
                   <PatientHealthForm
                     defaultValues={
                       health
-                        ? {
-                            has_disease: health.has_disease,
-                            disease_description: health.disease_description ?? "",
-                            has_allergy: health.has_allergy,
-                            allergy_description: health.allergy_description ?? "",
-                            uses_medication: health.uses_medication,
-                            medication_description: health.medication_description ?? "",
-                            health_observations: health.health_observations ?? "",
-                          }
+                        ? (() => {
+                            const parsed = parseDiseaseConditions(health.disease_description);
+                            return {
+                              has_disease: health.has_disease,
+                              disease_conditions: parsed.conditions,
+                              disease_other_enabled: parsed.otherEnabled,
+                              disease_other_text: parsed.otherText,
+                              has_allergy: health.has_allergy,
+                              allergy_description: health.allergy_description ?? "",
+                              uses_medication: health.uses_medication,
+                              medication_description: health.medication_description ?? "",
+                              health_observations: health.health_observations ?? "",
+                            };
+                          })()
                         : undefined
                     }
                     onSubmit={handleSaveHealth}

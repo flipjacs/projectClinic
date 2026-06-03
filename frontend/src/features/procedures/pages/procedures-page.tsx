@@ -1,6 +1,7 @@
 import { ListPlus, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { ConfirmDialog } from "@/components/feedback/confirm-dialog";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { PageHeader } from "@/components/layout/page-header";
@@ -16,6 +17,7 @@ import { ROLES } from "@/types/roles";
 import { cn } from "@/utils/cn";
 import { moneyToNumber, toMoneyPayload } from "@/utils/currency";
 import { ProcedureForm } from "../components/procedure-form";
+import { ProcedureSummaryCards } from "../components/procedure-summary-cards";
 import { ProceduresTable } from "../components/procedures-table";
 import {
   useCreateProcedure,
@@ -38,6 +40,7 @@ export function ProceduresPage() {
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<Procedure | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deactivating, setDeactivating] = useState<Procedure | null>(null);
 
   const search = useDebounce(searchInput.trim(), 400);
   const params = useMemo(
@@ -99,10 +102,20 @@ export function ProceduresPage() {
     }
   }
 
-  async function handleToggle(procedure: Procedure) {
+  function handleToggle(procedure: Procedure) {
+    // Inativar pede confirmação (some de novos orçamentos); ativar é direto.
+    if (procedure.is_active) {
+      setDeactivating(procedure);
+    } else {
+      void runToggle(procedure);
+    }
+  }
+
+  async function runToggle(procedure: Procedure) {
     try {
       await toggleActive.mutateAsync({ id: procedure.id, active: !procedure.is_active });
       toast.success(procedure.is_active ? "Procedimento inativado." : "Procedimento ativado.");
+      setDeactivating(null);
     } catch (error) {
       toast.error(toApiError(error).message);
     }
@@ -112,7 +125,7 @@ export function ProceduresPage() {
     <>
       <PageHeader
         title="Procedimentos"
-        description="Catálogo de procedimentos e valores de referência da clínica."
+        description="Gerencie os serviços e valores utilizados nos orçamentos."
         actions={
           canManage ? (
             <>
@@ -128,6 +141,10 @@ export function ProceduresPage() {
           ) : undefined
         }
       />
+
+      <div className="mb-6">
+        <ProcedureSummaryCards />
+      </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
@@ -163,13 +180,13 @@ export function ProceduresPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState title="Não foi possível carregar os procedimentos" onRetry={() => refetch()} />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
-          title="Nenhum procedimento encontrado"
+          title="Nenhum procedimento cadastrado"
           description={
             canManage
-              ? "Cadastre o primeiro procedimento para montar orçamentos."
+              ? "Cadastre os serviços realizados pela clínica para montar orçamentos mais rápido."
               : "Ainda não há procedimentos cadastrados."
           }
         />
@@ -223,6 +240,17 @@ export function ProceduresPage() {
           />
         </Modal>
       )}
+
+      <ConfirmDialog
+        open={Boolean(deactivating)}
+        title="Inativar procedimento"
+        message="Este procedimento poderá deixar de aparecer em novos orçamentos. Você pode reativá-lo quando quiser."
+        confirmLabel="Inativar procedimento"
+        tone="danger"
+        isLoading={toggleActive.isPending}
+        onConfirm={() => deactivating && runToggle(deactivating)}
+        onClose={() => setDeactivating(null)}
+      />
 
       {editing && (
         <Modal open onClose={() => setEditing(null)} title="Editar procedimento">

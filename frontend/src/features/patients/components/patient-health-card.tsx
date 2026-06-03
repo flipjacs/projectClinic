@@ -4,6 +4,7 @@ import { EmptyState } from "@/components/feedback/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
+import { parseDiseaseConditions } from "../constants/health-conditions";
 import type { PatientHealthInfo } from "../types/patient";
 
 interface PatientHealthCardProps {
@@ -26,6 +27,40 @@ function Row({
       <div className="min-w-0">
         <p className="text-sm font-medium text-ink">{label}</p>
         {active && description && (
+          <p className="mt-0.5 text-sm text-gray-600">{description}</p>
+        )}
+      </div>
+      <Badge tone={active ? "warning" : "neutral"}>{active ? "Sim" : "Não"}</Badge>
+    </div>
+  );
+}
+
+/** Linha de doença/condição: exibe as condições como badges. */
+function DiseaseRow({
+  active,
+  description,
+}: {
+  active: boolean;
+  description: string | null;
+}) {
+  const parsed = parseDiseaseConditions(description);
+  const hasBadges = parsed.conditions.length > 0 || parsed.otherText.length > 0;
+
+  return (
+    <div className="flex items-start justify-between gap-3 py-2">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-ink">Doença / condição</p>
+        {active && hasBadges && (
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {parsed.conditions.map((condition) => (
+              <Badge key={condition} tone="gold">
+                {condition}
+              </Badge>
+            ))}
+            {parsed.otherText && <Badge tone="neutral">{parsed.otherText}</Badge>}
+          </div>
+        )}
+        {active && !hasBadges && description && (
           <p className="mt-0.5 text-sm text-gray-600">{description}</p>
         )}
       </div>
@@ -59,7 +94,7 @@ export function PatientHealthCard({ health, canEdit, onEdit }: PatientHealthCard
           />
         ) : (
           <div className="divide-y divide-gray-100">
-            <Row label="Doença / condição" active={health.has_disease} description={health.disease_description} />
+            <DiseaseRow active={health.has_disease} description={health.disease_description} />
             <Row label="Alergia" active={health.has_allergy} description={health.allergy_description} />
             <Row label="Medicação contínua" active={health.uses_medication} description={health.medication_description} />
             {health.health_observations && (

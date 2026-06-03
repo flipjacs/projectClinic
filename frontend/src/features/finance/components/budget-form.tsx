@@ -2,7 +2,6 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardBody } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PatientSelect } from "@/features/appointments/components/patient-select";
@@ -14,6 +13,8 @@ import { ROLES } from "@/types/roles";
 import { moneyToNumber, toMoneyPayload } from "@/utils/currency";
 import type { BudgetCreateInput } from "../types/finance";
 import { BudgetItemsTable, lineTotal, type BudgetItemDraft } from "./budget-items-table";
+import { BudgetStepSection } from "./budget-step-section";
+import { BudgetSummaryPanel } from "./budget-summary-panel";
 
 interface BudgetFormProps {
   onSubmit: (input: BudgetCreateInput) => void | Promise<void>;
@@ -81,10 +82,12 @@ export function BudgetForm({ onSubmit, onCancel, isSubmitting }: BudgetFormProps
     onSubmit(payload);
   }
 
+  const estimatedTotal = items.reduce((acc, it) => acc + lineTotal(it), 0);
+
   return (
-    <Card>
-      <CardBody className="p-5 sm:p-6">
-        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+    <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 lg:grid-cols-3" noValidate>
+      <div className="space-y-6 lg:col-span-2">
+        <BudgetStepSection step={1} title="Paciente e profissional">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <PatientSelect
               value={patientId}
@@ -109,62 +112,66 @@ export function BudgetForm({ onSubmit, onCancel, isSubmitting }: BudgetFormProps
               />
             )}
           </div>
+        </BudgetStepSection>
 
-          {/* Adicionar procedimentos. */}
-          <div>
-            <span className="mb-1.5 block text-sm font-medium text-ink">Procedimentos</span>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <div className="flex-1">
-                <Select
-                  aria-label="Selecionar procedimento"
-                  placeholder={
-                    proceduresQuery.isLoading ? "Carregando…" : "Escolha um procedimento"
-                  }
-                  options={procedures.map((p) => ({
-                    value: String(p.id),
-                    label: p.name,
-                  }))}
-                  value={picked}
-                  onChange={(e) => setPicked(e.target.value)}
-                />
-              </div>
-              <Button type="button" variant="outline" onClick={addProcedure} disabled={!picked}>
-                <Plus className="h-4 w-4" />
-                Adicionar
-              </Button>
-            </div>
-            {errors.items && <p className="mt-1 text-xs text-red-600">{errors.items}</p>}
-            <div className="mt-3">
-              <BudgetItemsTable
-                items={items}
-                onQuantity={(i, q) =>
-                  setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, quantity: q } : it)))
+        <BudgetStepSection
+          step={2}
+          title="Procedimentos"
+          description="Monte o plano de tratamento com os procedimentos necessários."
+        >
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex-1">
+              <Select
+                aria-label="Selecionar procedimento"
+                placeholder={
+                  proceduresQuery.isLoading ? "Carregando…" : "Escolha um procedimento"
                 }
-                onUnitPrice={(i, v) =>
-                  setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, unit_price: v } : it)))
-                }
-                onRemove={(i) => setItems((prev) => prev.filter((_, idx) => idx !== i))}
+                options={procedures.map((p) => ({
+                  value: String(p.id),
+                  label: p.name,
+                }))}
+                value={picked}
+                onChange={(e) => setPicked(e.target.value)}
               />
             </div>
+            <Button type="button" variant="outline" onClick={addProcedure} disabled={!picked}>
+              <Plus className="h-4 w-4" />
+              Adicionar procedimento
+            </Button>
           </div>
+          {errors.items && <p className="mt-1 text-xs text-red-600">{errors.items}</p>}
+          <div className="mt-3">
+            <BudgetItemsTable
+              items={items}
+              onQuantity={(i, q) =>
+                setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, quantity: q } : it)))
+              }
+              onUnitPrice={(i, v) =>
+                setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, unit_price: v } : it)))
+              }
+              onRemove={(i) => setItems((prev) => prev.filter((_, idx) => idx !== i))}
+            />
+          </div>
+        </BudgetStepSection>
 
+        <BudgetStepSection step={3} title="Observações">
           <Textarea
             label="Observações (opcional)"
             rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
+        </BudgetStepSection>
+      </div>
 
-          <div className="flex justify-end gap-2 border-t border-line pt-5">
-            <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
-              Cancelar
-            </Button>
-            <Button type="submit" isLoading={isSubmitting}>
-              Criar orçamento
-            </Button>
-          </div>
-        </form>
-      </CardBody>
-    </Card>
+      <div className="lg:col-span-1">
+        <BudgetSummaryPanel
+          itemsCount={items.length}
+          estimatedTotal={estimatedTotal}
+          isSubmitting={isSubmitting}
+          onCancel={onCancel}
+        />
+      </div>
+    </form>
   );
 }

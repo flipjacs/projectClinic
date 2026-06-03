@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { healthSchema, type HealthFormValues } from "../schemas/patient-schema";
+import { HealthConditionSelector } from "./health-condition-selector";
 
 interface PatientHealthFormProps {
   defaultValues?: Partial<HealthFormValues>;
@@ -14,7 +15,9 @@ interface PatientHealthFormProps {
 
 const EMPTY: HealthFormValues = {
   has_disease: false,
-  disease_description: "",
+  disease_conditions: [],
+  disease_other_enabled: false,
+  disease_other_text: "",
   has_allergy: false,
   allergy_description: "",
   uses_medication: false,
@@ -47,9 +50,12 @@ export function PatientHealthForm({
   isSubmitting,
 }: PatientHealthFormProps) {
   const {
+    control,
     register,
     handleSubmit,
     watch,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<HealthFormValues>({
     resolver: zodResolver(healthSchema),
@@ -60,16 +66,61 @@ export function PatientHealthForm({
   const hasAllergy = watch("has_allergy");
   const usesMedication = watch("uses_medication");
 
+  function handleDiseaseToggle(next: boolean) {
+    if (!next) {
+      const v = getValues();
+      const hasData =
+        v.disease_conditions.length > 0 || (v.disease_other_enabled && v.disease_other_text.trim());
+      if (
+        hasData &&
+        !window.confirm("Remover as condições já selecionadas para este paciente?")
+      ) {
+        return;
+      }
+      setValue("disease_conditions", [], { shouldValidate: false });
+      setValue("disease_other_enabled", false, { shouldValidate: false });
+      setValue("disease_other_text", "", { shouldValidate: false });
+    }
+    setValue("has_disease", next, { shouldValidate: false });
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div className="space-y-3">
-        <Toggle label="Possui doença / condição" {...register("has_disease")} />
+        <Toggle
+          label="Possui doença / condição"
+          checked={hasDisease}
+          aria-expanded={hasDisease}
+          onChange={(e) => handleDiseaseToggle(e.target.checked)}
+        />
         {hasDisease && (
-          <Textarea
-            label="Descrição da doença"
-            rows={2}
-            error={errors.disease_description?.message}
-            {...register("disease_description")}
+          <Controller
+            control={control}
+            name="disease_conditions"
+            render={({ field: conditionsField }) => (
+              <HealthConditionSelector
+                conditions={conditionsField.value}
+                otherEnabled={watch("disease_other_enabled")}
+                otherText={watch("disease_other_text")}
+                onConditionsChange={(next) =>
+                  setValue("disease_conditions", next, { shouldValidate: true })
+                }
+                onOtherEnabledChange={(next) => {
+                  setValue("disease_other_enabled", next, { shouldValidate: true });
+                  if (!next) setValue("disease_other_text", "", { shouldValidate: true });
+                }}
+                onOtherTextChange={(next) =>
+                  setValue("disease_other_text", next, { shouldValidate: true })
+                }
+                onClear={() => {
+                  setValue("disease_conditions", [], { shouldValidate: true });
+                  setValue("disease_other_enabled", false, { shouldValidate: true });
+                  setValue("disease_other_text", "", { shouldValidate: true });
+                }}
+                conditionsError={errors.disease_conditions?.message}
+                otherError={errors.disease_other_text?.message}
+              />
+            )}
           />
         )}
       </div>

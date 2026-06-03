@@ -14,6 +14,7 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import { ROLES } from "@/types/roles";
 import { BUDGET_STATUS_LABELS, BUDGET_STATUS_ORDER } from "../constants";
 import { BudgetsTable } from "../components/budgets-table";
+import { BudgetSummaryCards } from "../components/budget-summary-cards";
 import { useBudgets } from "../hooks/use-finance";
 import type { BudgetStatus } from "../types/finance";
 
@@ -62,6 +63,10 @@ export function BudgetsPage() {
         }
       />
 
+      <div className="mb-6">
+        <BudgetSummaryCards />
+      </div>
+
       <Card className="mb-4">
         <CardBody className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -105,7 +110,7 @@ export function BudgetsPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState title="Não foi possível carregar os orçamentos" onRetry={() => refetch()} />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
           title="Nenhum orçamento encontrado"
