@@ -62,15 +62,15 @@ export function DashboardAlerts({ data }: { data: DashboardResponse }) {
             />
           </div>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-line">
             {alerts.map((alert, i) => (
               <li key={i} className="flex items-center gap-3 px-5 py-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-100">
                   <alert.icon className="h-[18px] w-[18px]" aria-hidden />
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-ink">{alert.label}</p>
-                  <p className="truncate text-xs text-gray-500">{alert.detail}</p>
+                  <p className="truncate text-xs text-ink-mute">{alert.detail}</p>
                 </div>
               </li>
             ))}

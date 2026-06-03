@@ -12,7 +12,7 @@ export function Loading({ label = "Carregando…", className, fullPage }: Loadin
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-2 text-sm text-gray-500",
+        "flex items-center justify-center gap-2 text-sm text-ink-mute",
         fullPage ? "min-h-[60vh]" : "py-10",
         className,
       )}

@@ -1,16 +1,19 @@
 import { forwardRef, useId, type TextareaHTMLAttributes } from "react";
 
 import { cn } from "@/utils/cn";
+import { fieldBase } from "./input";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
+  hint?: string;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, error, id, rows = 4, ...props }, ref) => {
+  ({ className, label, error, hint, id, rows = 4, ...props }, ref) => {
     const autoId = useId();
     const taId = id ?? autoId;
+    const descId = `${taId}-desc`;
     return (
       <div className="w-full">
         {label && (
@@ -23,15 +26,26 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           rows={rows}
           aria-invalid={Boolean(error)}
+          aria-describedby={error || hint ? descId : undefined}
           className={cn(
-            "w-full rounded-lg border bg-white px-3 py-2 text-sm text-ink",
-            "placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-gold-400",
-            error ? "border-red-400" : "border-gray-300",
+            fieldBase,
+            "resize-y px-3 py-2 leading-relaxed",
+            error
+              ? "border-red-400 focus-visible:ring-red-300"
+              : "border-line hover:border-graphite-200",
             className,
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        {error ? (
+          <p id={descId} className="mt-1 text-xs text-red-600">
+            {error}
+          </p>
+        ) : hint ? (
+          <p id={descId} className="mt-1 text-xs text-ink-mute">
+            {hint}
+          </p>
+        ) : null}
       </div>
     );
   },

@@ -26,6 +26,33 @@ export function formatDateTime(iso: string | null | undefined): string {
   });
 }
 
+/** Constrói uma Date local a partir de "YYYY-MM-DD" sem deslocamento de fuso. */
+function parseDateOnly(value: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  const [, y, m, d] = match;
+  return new Date(Number(y), Number(m) - 1, Number(d));
+}
+
+/** Data sem hora (ex.: visit_date) — "dd/mm/aaaa", segura quanto a fuso. */
+export function formatDateOnly(value: string | null | undefined): string {
+  if (!value) return "—";
+  const d = parseDateOnly(value);
+  return d ? d.toLocaleDateString("pt-BR") : "—";
+}
+
+/** Data por extenso (ex.: "1 de maio de 2024") para títulos de leitura. */
+export function formatDateLong(value: string | null | undefined): string {
+  if (!value) return "—";
+  const d = parseDateOnly(value);
+  return d
+    ? d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })
+    : "—";
+}
+
 export function formatTime(iso: string | null | undefined): string {
   if (!iso) return "—";
   const d = new Date(iso);

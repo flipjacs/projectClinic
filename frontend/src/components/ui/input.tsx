@@ -8,10 +8,20 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hint?: string;
 }
 
+/** Classe base compartilhada por todos os controles de formulário de texto. */
+export const fieldBase = cn(
+  "w-full rounded-lg border bg-white text-sm text-ink",
+  "placeholder:text-ink-mute/70",
+  "transition-[border-color,box-shadow] duration-150 ease-out-quint",
+  "focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-0",
+  "disabled:cursor-not-allowed disabled:bg-graphite-50 disabled:text-ink-mute",
+);
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, hint, id, ...props }, ref) => {
     const autoId = useId();
     const inputId = id ?? autoId;
+    const descId = `${inputId}-desc`;
     return (
       <div className="w-full">
         {label && (
@@ -23,19 +33,25 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           ref={ref}
           aria-invalid={Boolean(error)}
+          aria-describedby={error || hint ? descId : undefined}
           className={cn(
-            "h-10 w-full rounded-lg border bg-white px-3 text-sm text-ink",
-            "placeholder:text-gray-400",
-            "focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-0",
-            error ? "border-red-400" : "border-gray-300",
+            fieldBase,
+            "h-10 px-3",
+            error
+              ? "border-red-400 focus-visible:ring-red-300"
+              : "border-line hover:border-graphite-200",
             className,
           )}
           {...props}
         />
         {error ? (
-          <p className="mt-1 text-xs text-red-600">{error}</p>
+          <p id={descId} className="mt-1 text-xs text-red-600">
+            {error}
+          </p>
         ) : hint ? (
-          <p className="mt-1 text-xs text-gray-500">{hint}</p>
+          <p id={descId} className="mt-1 text-xs text-ink-mute">
+            {hint}
+          </p>
         ) : null}
       </div>
     );

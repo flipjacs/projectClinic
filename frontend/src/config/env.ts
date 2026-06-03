@@ -7,6 +7,9 @@
 const apiUrl = import.meta.env.VITE_API_URL?.trim();
 
 if (!apiUrl) {
+  if (import.meta.env.PROD) {
+    throw new Error("VITE_API_URL não definida para o build de produção.");
+  }
   // Falha cedo e de forma clara em desenvolvimento se faltar configuração.
   // eslint-disable-next-line no-console
   console.warn(

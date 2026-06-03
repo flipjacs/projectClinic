@@ -10,20 +10,85 @@
   }
 
   body {
-    @apply bg-white text-ink antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Hierarquia de cabeçalhos equilibrada (linhas mais uniformes). */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   /* Foco consistente e acessível em toda a aplicação (dourado). */
   :focus-visible {
-    @apply outline-none ring-2 ring-gold-400 ring-offset-1;
+    @apply outline-none ring-2 ring-gold-400 ring-offset-2 ring-offset-canvas;
+  }
+
+  /* Seleção de texto na cor da marca. */
+  ::selection {
+    @apply bg-gold-200/60 text-ink;
   }
 }
 
 @layer utilities {
-  /* Scrollbar discreta para áreas internas. */
+  /* Scrollbar discreta para áreas internas claras. */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #d4d4d4 transparent;
+    scrollbar-color: #d4d4cf transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d4d4cf;
+    border-radius: 9999px;
+  }
+
+  /* Scrollbar para superfícies escuras (sidebar). */
+  .scrollbar-dark {
+    scrollbar-width: thin;
+    scrollbar-color: #363b44 transparent;
+  }
+  .scrollbar-dark::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-dark::-webkit-scrollbar-thumb {
+    background-color: #363b44;
+    border-radius: 9999px;
+  }
+
+  /* Brilho deslizante do esqueleto de carregamento. */
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* Acessibilidade: respeita quem prefere menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

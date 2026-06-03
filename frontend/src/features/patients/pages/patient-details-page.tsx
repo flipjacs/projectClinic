@@ -1,4 +1,4 @@
-import { ArrowLeft, Pencil, Power } from "lucide-react";
+import { ArrowLeft, FileText, Pencil, Power } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -106,8 +106,41 @@ export function PatientDetailsPage() {
       />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2">
           <PatientSummaryCard patient={patient} />
+
+          {/* Entrada para o prontuário — apenas perfis clínicos. */}
+          {isClinical && (
+            <Card>
+              <CardBody className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-50 text-gold-600 ring-1 ring-inset ring-gold-100">
+                    <FileText className="h-5 w-5" aria-hidden />
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-ink">Prontuário odontológico</h3>
+                    <p className="mt-0.5 text-sm text-ink-mute">
+                      Histórico clínico, diagnósticos e evolução do paciente.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(`/patients/${patient.id}/medical-records`)}
+                  >
+                    Ver histórico
+                  </Button>
+                  <Button
+                    onClick={() => navigate(`/patients/${patient.id}/medical-records/new`)}
+                  >
+                    <FileText className="h-4 w-4" />
+                    Novo registro
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          )}
         </div>
 
         <div>

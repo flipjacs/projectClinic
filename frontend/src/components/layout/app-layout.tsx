@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
+import { Loading } from "@/components/feedback/loading";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { NAV_ITEMS } from "@/lib/permissions";
 import { Header } from "./header";
@@ -16,7 +17,7 @@ export function AppLayout() {
   const current = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path));
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-canvas">
       <Sidebar role={user?.role} />
       <MobileSidebar
         open={mobileOpen}
@@ -26,9 +27,11 @@ export function AppLayout() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Header title={current?.label} onOpenMenu={() => setMobileOpen(true)} />
-        <main className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="mx-auto w-full max-w-7xl">
-            <Outlet />
+        <main className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div key={location.pathname} className="mx-auto w-full max-w-7xl animate-fade-in">
+            <Suspense fallback={<Loading fullPage label="Carregando…" />}>
+              <Outlet />
+            </Suspense>
           </div>
         </main>
       </div>

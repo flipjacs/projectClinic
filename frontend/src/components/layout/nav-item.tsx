@@ -10,6 +10,7 @@ interface NavItemProps {
   onNavigate?: () => void;
 }
 
+/** Item de navegação da sidebar grafite. Ativo = superfície + texto claro + traço dourado. */
 export function NavItem({ to, label, icon: Icon, onNavigate }: NavItemProps) {
   return (
     <NavLink
@@ -17,10 +18,11 @@ export function NavItem({ to, label, icon: Icon, onNavigate }: NavItemProps) {
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium",
+          "transition-colors duration-150 ease-out-quint",
           isActive
-            ? "bg-gold-50 text-gold-800"
-            : "text-gray-600 hover:bg-gray-100 hover:text-ink",
+            ? "bg-graphite-700 text-white"
+            : "text-graphite-300 hover:bg-graphite-700/50 hover:text-white",
         )
       }
     >
@@ -29,13 +31,19 @@ export function NavItem({ to, label, icon: Icon, onNavigate }: NavItemProps) {
           {/* Indicador dourado de item ativo. */}
           <span
             className={cn(
-              "h-5 w-0.5 rounded-full",
-              isActive ? "bg-gold-500" : "bg-transparent",
+              "absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gold-400 transition-opacity",
+              isActive ? "opacity-100" : "opacity-0",
             )}
             aria-hidden
           />
-          <Icon className="h-[18px] w-[18px]" aria-hidden />
-          <span>{label}</span>
+          <Icon
+            className={cn(
+              "h-[18px] w-[18px] shrink-0 transition-colors",
+              isActive ? "text-gold-400" : "text-graphite-400 group-hover:text-graphite-200",
+            )}
+            aria-hidden
+          />
+          <span className="truncate">{label}</span>
         </>
       )}
     </NavLink>

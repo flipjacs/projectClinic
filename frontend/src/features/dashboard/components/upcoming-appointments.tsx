@@ -37,9 +37,9 @@ export function UpcomingAppointments({
 }) {
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between">
+      <CardHeader>
         <CardTitle>Próximas consultas</CardTitle>
-        <CalendarClock className="h-4 w-4 text-gray-400" aria-hidden />
+        <CalendarClock className="h-4 w-4 text-ink-mute" aria-hidden />
       </CardHeader>
       <CardBody className="p-0">
         {appointments.length === 0 ? (
@@ -51,12 +51,12 @@ export function UpcomingAppointments({
             />
           </div>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-line">
             {appointments.map((appt) => (
-              <li key={appt.id} className="flex items-center justify-between gap-3 px-5 py-3">
+              <li key={appt.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-gold-50/40">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-ink">{appt.patient.name}</p>
-                  <p className="truncate text-xs text-gray-500">
+                  <p className="truncate text-xs text-ink-mute">
                     {formatDateTime(appt.scheduled_start)} · Dr(a). {appt.dentist.name}
                   </p>
                 </div>
