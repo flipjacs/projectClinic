@@ -1,0 +1,46 @@
+import { api } from "@/lib/api";
+import type { Paginated } from "@/types/api";
+import type { FinanceSummary, Payment, RevenueReport } from "../types/finance";
+
+export interface PendingPaymentsParams {
+  from?: string;
+  to?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getFinanceSummary(): Promise<FinanceSummary> {
+  const { data } = await api.get<FinanceSummary>("/finance/summary");
+  return data;
+}
+
+export async function getWeeklyRevenue(): Promise<RevenueReport> {
+  const { data } = await api.get<RevenueReport>("/finance/revenue/weekly");
+  return data;
+}
+
+export async function getMonthlyRevenue(): Promise<RevenueReport> {
+  const { data } = await api.get<RevenueReport>("/finance/revenue/monthly");
+  return data;
+}
+
+export async function getRevenue(from: string, to: string): Promise<RevenueReport> {
+  const { data } = await api.get<RevenueReport>("/finance/revenue", {
+    params: { from, to },
+  });
+  return data;
+}
+
+export async function listPendingPayments(
+  params: PendingPaymentsParams,
+): Promise<Paginated<Payment>> {
+  const { data } = await api.get<Paginated<Payment>>("/finance/pending-payments", {
+    params: {
+      from: params.from || undefined,
+      to: params.to || undefined,
+      page: params.page ?? 1,
+      page_size: params.pageSize ?? 20,
+    },
+  });
+  return data;
+}

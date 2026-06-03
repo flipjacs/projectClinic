@@ -1,9 +1,11 @@
 import {
   Calendar,
   ClipboardList,
+  FileText,
   LayoutDashboard,
   Package,
   PieChart,
+  Receipt,
   Settings,
   Stethoscope,
   Users,
@@ -28,6 +30,7 @@ export interface NavItemConfig {
 
 const ALL: Role[] = [ROLES.ADMIN, ROLES.DENTIST, ROLES.RECEPTIONIST];
 const CLINICAL: Role[] = [ROLES.ADMIN, ROLES.DENTIST];
+const FINANCE_ADMIN: Role[] = [ROLES.ADMIN];
 
 /**
  * Configuração estática do menu (filtrada por role em runtime — barato e sem
@@ -42,7 +45,9 @@ export const NAV_ITEMS: NavItemConfig[] = [
   { key: "appointments", label: "Agenda", path: "/appointments", icon: Calendar, roles: ALL, section: "main" },
   { key: "medical-records", label: "Prontuários", path: "/medical-records", icon: ClipboardList, roles: CLINICAL, section: "main" },
   { key: "procedures", label: "Procedimentos", path: "/procedures", icon: Stethoscope, roles: CLINICAL, section: "main" },
-  { key: "finance", label: "Financeiro", path: "/finance", icon: Wallet, roles: [ROLES.ADMIN], section: "main" },
+  { key: "budgets", label: "Orçamentos", path: "/budgets", icon: FileText, roles: CLINICAL, section: "main" },
+  { key: "payments", label: "Pagamentos", path: "/payments", icon: Receipt, roles: ALL, section: "main" },
+  { key: "finance", label: "Financeiro", path: "/finance", icon: Wallet, roles: FINANCE_ADMIN, section: "main" },
   { key: "inventory", label: "Estoque", path: "/inventory", icon: Package, roles: ALL, section: "main" },
   { key: "reports", label: "Relatórios", path: "/reports", icon: PieChart, roles: CLINICAL, section: "main" },
   { key: "users", label: "Usuários", path: "/users", icon: Users, roles: [ROLES.ADMIN], section: "admin" },
@@ -78,4 +83,4 @@ export function canAccess(role: Role | undefined, allowed: Role[]): boolean {
   return allowed.includes(role);
 }
 
-export { ALL as ALL_ROLES, CLINICAL as CLINICAL_ROLES };
+export { ALL as ALL_ROLES, CLINICAL as CLINICAL_ROLES, FINANCE_ADMIN as FINANCE_ADMIN_ROLES };
