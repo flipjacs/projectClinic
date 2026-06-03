@@ -1,17 +1,21 @@
-import { XCircle } from "lucide-react";
+import { Pencil, RefreshCw, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/utils/currency";
 import { formatDate } from "@/utils/format";
-import { PAYMENT_METHOD_LABELS } from "../constants";
+import { PAYMENT_METHOD_LABELS, PAYMENT_TRANSITIONS } from "../constants";
 import type { Payment } from "../types/finance";
 import { PaymentStatusBadge } from "./payment-status-badge";
 
 interface PaymentsTableProps {
   payments: Payment[];
-  /** Mostra a ação de cancelar (apenas perfis clínicos). */
+  /** Mostra as ações clínicas (alterar status / cancelar). */
   canCancel?: boolean;
   onCancel?: (payment: Payment) => void;
+  /** Habilita a ação de alterar status (apenas perfis clínicos). */
+  onChangeStatus?: (payment: Payment) => void;
+  /** Habilita a ação de editar (forma/datas/observações — apenas clínicos). */
+  onEdit?: (payment: Payment) => void;
   /** Esconde a coluna de paciente (ex.: dentro do detalhe de um orçamento). */
   hidePatient?: boolean;
 }
@@ -20,8 +24,11 @@ export function PaymentsTable({
   payments,
   canCancel,
   onCancel,
+  onChangeStatus,
+  onEdit,
   hidePatient,
 }: PaymentsTableProps) {
+  const hasActions = Boolean(canCancel || onChangeStatus || onEdit);
   return (
     <div className="overflow-x-auto rounded-2xl border border-line bg-white">
       <table className="min-w-full divide-y divide-line">
@@ -32,7 +39,7 @@ export function PaymentsTable({
             <th className="hidden px-5 py-3 sm:table-cell">Forma</th>
             <th className="px-5 py-3">Status</th>
             <th className="hidden px-5 py-3 sm:table-cell">Data</th>
-            {canCancel && <th className="px-5 py-3" />}
+            {hasActions && <th className="px-5 py-3" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
@@ -53,14 +60,28 @@ export function PaymentsTable({
               <td className="hidden whitespace-nowrap px-5 py-3 text-ink-mute sm:table-cell">
                 {formatDate(p.paid_at ?? p.created_at)}
               </td>
-              {canCancel && (
-                <td className="px-5 py-3 text-right">
-                  {p.status !== "canceled" && onCancel && (
-                    <Button variant="ghost" size="sm" onClick={() => onCancel(p)}>
-                      <XCircle className="h-4 w-4" />
-                      Cancelar
-                    </Button>
-                  )}
+              {hasActions && (
+                <td className="px-5 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    {onEdit && p.status !== "canceled" && (
+                      <Button variant="ghost" size="sm" onClick={() => onEdit(p)}>
+                        <Pencil className="h-4 w-4" />
+                        Editar
+                      </Button>
+                    )}
+                    {onChangeStatus && PAYMENT_TRANSITIONS[p.status].length > 0 && (
+                      <Button variant="ghost" size="sm" onClick={() => onChangeStatus(p)}>
+                        <RefreshCw className="h-4 w-4" />
+                        Status
+                      </Button>
+                    )}
+                    {canCancel && p.status !== "canceled" && onCancel && (
+                      <Button variant="ghost" size="sm" onClick={() => onCancel(p)}>
+                        <XCircle className="h-4 w-4" />
+                        Cancelar
+                      </Button>
+                    )}
+                  </div>
                 </td>
               )}
             </tr>

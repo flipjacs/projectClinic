@@ -13,6 +13,7 @@ import {
   updateProcedure,
   type ListProceduresParams,
 } from "../api/procedures-api";
+import { DEFAULT_PROCEDURES } from "../constants";
 import type { ProcedureInput } from "../types/procedure";
 
 export const procedureKeys = {
@@ -68,6 +69,51 @@ export function useSetProcedureActive() {
   return useMutation({
     mutationFn: ({ id, active }: { id: number; active: boolean }) =>
       setProcedureActive(id, active),
+    onSuccess: () => qc.invalidateQueries({ queryKey: procedureKeys.all }),
+  });
+}
+
+export interface SeedResult {
+  created: number;
+  failed: number;
+  skipped: number;
+}
+
+/**
+ * Cria o catálogo padrão de procedimentos, pulando os que já existem (comparação
+ * por nome, sem diferenciar maiúsculas/acentos de espaço). Preço fica em 0,00
+ * para a clínica ajustar depois. Como o backend não impõe nome único, a
+ * deduplicação acontece aqui.
+ */
+export function useSeedDefaultProcedures() {
+  const qc = useQueryClient();
+  return useMutation<SeedResult>({
+    mutationFn: async () => {
+      const existing = await listProcedures({
+        includeInactive: true,
+        page: 1,
+        pageSize: 100,
+      });
+      const have = new Set(existing.items.map((p) => p.name.trim().toLowerCase()));
+      const missing = DEFAULT_PROCEDURES.filter(
+        (name) => !have.has(name.trim().toLowerCase()),
+      );
+      const skipped = DEFAULT_PROCEDURES.length - missing.length;
+      if (missing.length === 0) return { created: 0, failed: 0, skipped };
+
+      const results = await Promise.allSettled(
+        missing.map((name) =>
+          createProcedure({
+            name,
+            description: null,
+            base_price: "0.00",
+            estimated_duration_minutes: null,
+          }),
+        ),
+      );
+      const created = results.filter((r) => r.status === "fulfilled").length;
+      return { created, failed: results.length - created, skipped };
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: procedureKeys.all }),
   });
 }

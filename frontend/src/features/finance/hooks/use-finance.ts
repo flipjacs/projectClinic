@@ -26,13 +26,20 @@ import {
 } from "../api/budgets-api";
 import {
   cancelPayment,
+  changePaymentStatus,
   createPayment,
   getPayment,
   listBudgetPayments,
   listPayments,
+  updatePayment,
   type ListPaymentsParams,
 } from "../api/payments-api";
-import type { BudgetCreateInput, PaymentCreateInput } from "../types/finance";
+import type {
+  BudgetCreateInput,
+  PaymentCreateInput,
+  PaymentStatus,
+  PaymentUpdateInput,
+} from "../types/finance";
 
 export const financeKeys = {
   all: ["finance"] as const,
@@ -193,6 +200,22 @@ export function useCancelPayment(id: number) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (reason: string | null) => cancelPayment(id, reason),
+    onSuccess: () => invalidateMoney(qc),
+  });
+}
+
+export function useChangePaymentStatus(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (status: PaymentStatus) => changePaymentStatus(id, status),
+    onSuccess: () => invalidateMoney(qc),
+  });
+}
+
+export function useUpdatePayment(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: PaymentUpdateInput) => updatePayment(id, input),
     onSuccess: () => invalidateMoney(qc),
   });
 }

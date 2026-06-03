@@ -63,6 +63,18 @@ export const PAYMENT_STATUS_FORM_OPTIONS: PaymentStatus[] = [
   "pending",
 ];
 
+/**
+ * Transições de status permitidas (espelham o backend). O cancelamento tem
+ * fluxo próprio (com motivo), por isso é omitido aqui — usa-se o diálogo de
+ * cancelar.
+ */
+export const PAYMENT_TRANSITIONS: Record<PaymentStatus, PaymentStatus[]> = {
+  pending: ["partially_paid", "paid"],
+  partially_paid: ["paid"],
+  paid: [],
+  canceled: [],
+};
+
 export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   cash: "Dinheiro",
   pix: "PIX",
@@ -80,6 +92,25 @@ export const PAYMENT_METHOD_ORDER: PaymentMethod[] = [
   "bank_transfer",
   "other",
 ];
+
+// ===========================================================================
+// Helpers de data (input "YYYY-MM-DD" <-> ISO)
+// ===========================================================================
+
+/** Converte "YYYY-MM-DD" em ISO no meio-dia local (evita salto de fuso). */
+export function dateInputToIso(date: string): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1, 12, 0, 0).toISOString();
+}
+
+/** Extrai "YYYY-MM-DD" local de um ISO (vazio quando nulo). */
+export function isoToDateInput(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const dt = new Date(iso);
+  if (Number.isNaN(dt.getTime())) return "";
+  const off = dt.getTimezoneOffset();
+  return new Date(dt.getTime() - off * 60_000).toISOString().slice(0, 10);
+}
 
 // ===========================================================================
 // Erros amigáveis

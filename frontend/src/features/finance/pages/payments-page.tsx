@@ -15,6 +15,8 @@ import { toast } from "@/stores/toast-store";
 import { ROLES } from "@/types/roles";
 import { PAYMENT_STATUS_LABELS, PAYMENT_STATUS_ORDER, financeErrorMessage } from "../constants";
 import { CancelReasonDialog } from "../components/cancel-reason-dialog";
+import { ChangePaymentStatusDialog } from "../components/change-payment-status-dialog";
+import { EditPaymentDialog } from "../components/edit-payment-dialog";
 import { PaymentsTable } from "../components/payments-table";
 import { useCancelPayment, usePayments } from "../hooks/use-finance";
 import type { Payment, PaymentStatus } from "../types/finance";
@@ -34,6 +36,8 @@ export function PaymentsPage() {
   const [patientId, setPatientId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState<Payment | null>(null);
+  const [statusTarget, setStatusTarget] = useState<Payment | null>(null);
+  const [editTarget, setEditTarget] = useState<Payment | null>(null);
 
   const cancelMutation = useCancelPayment(cancelTarget?.id ?? 0);
 
@@ -116,6 +120,8 @@ export function PaymentsPage() {
             payments={data.items}
             canCancel={canCancel}
             onCancel={setCancelTarget}
+            onChangeStatus={canCancel ? setStatusTarget : undefined}
+            onEdit={canCancel ? setEditTarget : undefined}
           />
           <div className="mt-4 flex items-center justify-between text-sm text-ink-mute">
             <span>
@@ -157,6 +163,17 @@ export function PaymentsPage() {
           onConfirm={confirmCancel}
           onClose={() => setCancelTarget(null)}
         />
+      )}
+
+      {statusTarget && (
+        <ChangePaymentStatusDialog
+          payment={statusTarget}
+          onClose={() => setStatusTarget(null)}
+        />
+      )}
+
+      {editTarget && (
+        <EditPaymentDialog payment={editTarget} onClose={() => setEditTarget(null)} />
       )}
     </>
   );

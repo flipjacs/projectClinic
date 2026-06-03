@@ -15,6 +15,8 @@ import { ROLES } from "@/types/roles";
 import { formatMoney } from "@/utils/currency";
 import { CancelReasonDialog } from "../components/cancel-reason-dialog";
 import { BudgetStatusBadge } from "../components/budget-status-badge";
+import { ChangePaymentStatusDialog } from "../components/change-payment-status-dialog";
+import { EditPaymentDialog } from "../components/edit-payment-dialog";
 import { PaymentsTable } from "../components/payments-table";
 import { financeErrorMessage, TERMINAL_BUDGET_STATUSES } from "../constants";
 import {
@@ -23,6 +25,7 @@ import {
   useBudgetPayments,
   useBudgetSettlement,
 } from "../hooks/use-finance";
+import type { Payment } from "../types/finance";
 
 function SettlementRow({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
@@ -46,6 +49,8 @@ export function BudgetDetailsPage() {
   const actions = useBudgetActions(id);
 
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [statusTarget, setStatusTarget] = useState<Payment | null>(null);
+  const [editTarget, setEditTarget] = useState<Payment | null>(null);
 
   if (isLoading) return <Loading fullPage label="Carregando orçamento…" />;
   if (isError || !budget) {
@@ -192,7 +197,12 @@ export function BudgetDetailsPage() {
                   />
                 </div>
               ) : (
-                <PaymentsTable payments={payments.data.items} hidePatient />
+                <PaymentsTable
+                  payments={payments.data.items}
+                  hidePatient
+                  onChangeStatus={isClinical ? setStatusTarget : undefined}
+                  onEdit={isClinical ? setEditTarget : undefined}
+                />
               )}
             </CardBody>
           </Card>
@@ -238,6 +248,17 @@ export function BudgetDetailsPage() {
           }}
           onClose={() => setCancelOpen(false)}
         />
+      )}
+
+      {statusTarget && (
+        <ChangePaymentStatusDialog
+          payment={statusTarget}
+          onClose={() => setStatusTarget(null)}
+        />
+      )}
+
+      {editTarget && (
+        <EditPaymentDialog payment={editTarget} onClose={() => setEditTarget(null)} />
       )}
     </>
   );

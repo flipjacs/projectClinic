@@ -90,6 +90,17 @@ export interface PaymentCreateInput {
   notes: string | null;
 }
 
+/**
+ * Edição parcial de um pagamento (PATCH /payments/{id}). O backend não permite
+ * alterar `patient_id`, `budget_id`, `amount` nem `status` por aqui.
+ */
+export interface PaymentUpdateInput {
+  payment_method: PaymentMethod;
+  paid_at: string | null;
+  due_date: string | null;
+  notes: string | null;
+}
+
 export interface RevenueReport {
   period_start: string;
   period_end: string;

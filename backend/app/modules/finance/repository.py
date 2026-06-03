@@ -135,9 +135,11 @@ class PaymentRepository:
         total = self.db.execute(count_base).scalar_one()
         stmt = (
             base.order_by(
-                Payment.paid_at.desc().nulls_last()
-                if hasattr(Payment.paid_at.desc(), "nulls_last")
-                else Payment.paid_at.desc(),
+                # MySQL não suporta "NULLS LAST" (sintaxe PostgreSQL). Ordenar por
+                # `paid_at IS NULL` (0 antes de 1) joga os sem data de pagamento
+                # para o fim de forma portável entre MySQL e PostgreSQL.
+                Payment.paid_at.is_(None),
+                Payment.paid_at.desc(),
                 Payment.created_at.desc(),
                 Payment.id.desc(),
             )

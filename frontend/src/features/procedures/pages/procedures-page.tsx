@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { ListPlus, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -20,6 +20,7 @@ import { ProceduresTable } from "../components/procedures-table";
 import {
   useCreateProcedure,
   useProcedures,
+  useSeedDefaultProcedures,
   useSetProcedureActive,
   useUpdateProcedure,
 } from "../hooks/use-procedures";
@@ -48,6 +49,24 @@ export function ProceduresPage() {
   const createMutation = useCreateProcedure();
   const updateMutation = useUpdateProcedure(editing?.id ?? 0);
   const toggleActive = useSetProcedureActive();
+  const seed = useSeedDefaultProcedures();
+
+  async function handleSeed() {
+    try {
+      const result = await seed.mutateAsync();
+      if (result.created === 0 && result.failed === 0) {
+        toast.info("O catálogo padrão já está completo.");
+        return;
+      }
+      toast.success(
+        `${result.created} procedimento(s) adicionado(s)` +
+          (result.skipped ? ` · ${result.skipped} já existia(m)` : "") +
+          (result.failed ? ` · ${result.failed} falhou(aram)` : ""),
+      );
+    } catch (error) {
+      toast.error(toApiError(error).message);
+    }
+  }
 
   const totalPages = data?.meta.total_pages ?? 0;
 
@@ -96,10 +115,16 @@ export function ProceduresPage() {
         description="Catálogo de procedimentos e valores de referência da clínica."
         actions={
           canManage ? (
-            <Button onClick={() => setCreating(true)}>
-              <Plus className="h-4 w-4" />
-              Novo procedimento
-            </Button>
+            <>
+              <Button variant="outline" onClick={handleSeed} isLoading={seed.isPending}>
+                <ListPlus className="h-4 w-4" />
+                Adicionar catálogo padrão
+              </Button>
+              <Button onClick={() => setCreating(true)}>
+                <Plus className="h-4 w-4" />
+                Novo procedimento
+              </Button>
+            </>
           ) : undefined
         }
       />

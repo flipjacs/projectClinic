@@ -1,6 +1,11 @@
 import { api } from "@/lib/api";
 import type { Paginated } from "@/types/api";
-import type { Payment, PaymentCreateInput, PaymentStatus } from "../types/finance";
+import type {
+  Payment,
+  PaymentCreateInput,
+  PaymentStatus,
+  PaymentUpdateInput,
+} from "../types/finance";
 
 export interface ListPaymentsParams {
   patientId?: number;
@@ -55,5 +60,21 @@ export async function cancelPayment(
   const { data } = await api.patch<Payment>(`/payments/${id}/cancel`, {
     cancellation_reason: cancellationReason,
   });
+  return data;
+}
+
+export async function changePaymentStatus(
+  id: number,
+  status: PaymentStatus,
+): Promise<Payment> {
+  const { data } = await api.patch<Payment>(`/payments/${id}/status`, { status });
+  return data;
+}
+
+export async function updatePayment(
+  id: number,
+  input: PaymentUpdateInput,
+): Promise<Payment> {
+  const { data } = await api.patch<Payment>(`/payments/${id}`, input);
   return data;
 }

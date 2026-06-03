@@ -64,6 +64,17 @@ export const paymentSchema = z.object({
 
 export type PaymentFormValues = z.infer<typeof paymentSchema>;
 
+export const paymentEditSchema = z.object({
+  payment_method: z.custom<PaymentMethod>((v) => typeof v === "string" && v.length > 0, {
+    message: "Selecione a forma de pagamento",
+  }),
+  paid_at_date: z.string().optional(),
+  due_date: z.string().optional(),
+  notes: z.string().trim().max(4000, "Texto muito longo").optional().or(z.literal("")),
+});
+
+export type PaymentEditFormValues = z.infer<typeof paymentEditSchema>;
+
 export const cancelReasonSchema = z.object({
   reason: z
     .string()
