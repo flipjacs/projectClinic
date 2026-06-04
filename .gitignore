@@ -1,4 +1,11 @@
+# Diretórios de ferramentas/agentes (não pertencem ao repositório remoto)
 .claude/
 .codex/
-.github/
 .playwright-mcp/
+
+# Lixo de skills despejado dentro de .github (mantém workflows/ de CI)
+.github/skills/
+
+# Caches do Python
+__pycache__/
+*.py[cod]
