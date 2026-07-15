@@ -114,6 +114,49 @@ const PaymentCreatePage = lazy(() =>
     default: m.PaymentCreatePage,
   })),
 );
+const InventoryPage = lazy(() =>
+  import("@/features/inventory/pages/inventory-page").then((m) => ({
+    default: m.InventoryPage,
+  })),
+);
+const InventoryItemsPage = lazy(() =>
+  import("@/features/inventory/pages/inventory-items-page").then((m) => ({
+    default: m.InventoryItemsPage,
+  })),
+);
+const InventoryMovementsPage = lazy(() =>
+  import("@/features/inventory/pages/inventory-movements-page").then((m) => ({
+    default: m.InventoryMovementsPage,
+  })),
+);
+const InventoryItemDetailsPage = lazy(() =>
+  import("@/features/inventory/pages/inventory-item-details-page").then((m) => ({
+    default: m.InventoryItemDetailsPage,
+  })),
+);
+const ReportsPage = lazy(() =>
+  import("@/features/reports/pages/reports-page").then((m) => ({ default: m.ReportsPage })),
+);
+const ReportsFinancePage = lazy(() =>
+  import("@/features/reports/pages/reports-finance-page").then((m) => ({
+    default: m.ReportsFinancePage,
+  })),
+);
+const ReportsPatientsPage = lazy(() =>
+  import("@/features/reports/pages/reports-patients-page").then((m) => ({
+    default: m.ReportsPatientsPage,
+  })),
+);
+const ReportsAppointmentsPage = lazy(() =>
+  import("@/features/reports/pages/reports-appointments-page").then((m) => ({
+    default: m.ReportsAppointmentsPage,
+  })),
+);
+const ReportsInventoryPage = lazy(() =>
+  import("@/features/reports/pages/reports-inventory-page").then((m) => ({
+    default: m.ReportsInventoryPage,
+  })),
+);
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -210,19 +253,39 @@ export const router = createBrowserRouter([
       },
       {
         path: "inventory",
-        element: (
-          <RoleGuard allowed={ALL_ROLES}>
-            <PlaceholderPage moduleKey="inventory" />
-          </RoleGuard>
-        ),
+        element: <RoleGuard allowed={ALL_ROLES} children={<InventoryPage />} />,
+      },
+      {
+        path: "inventory/items",
+        element: <RoleGuard allowed={ALL_ROLES} children={<InventoryItemsPage />} />,
+      },
+      {
+        path: "inventory/items/:itemId",
+        element: <RoleGuard allowed={ALL_ROLES} children={<InventoryItemDetailsPage />} />,
+      },
+      {
+        path: "inventory/movements",
+        element: <RoleGuard allowed={ALL_ROLES} children={<InventoryMovementsPage />} />,
       },
       {
         path: "reports",
-        element: (
-          <RoleGuard allowed={CLINICAL_ROLES}>
-            <PlaceholderPage moduleKey="reports" />
-          </RoleGuard>
-        ),
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<ReportsPage />} />,
+      },
+      {
+        path: "reports/finance",
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<ReportsFinancePage />} />,
+      },
+      {
+        path: "reports/patients",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<ReportsPatientsPage />} />,
+      },
+      {
+        path: "reports/appointments",
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<ReportsAppointmentsPage />} />,
+      },
+      {
+        path: "reports/inventory",
+        element: <RoleGuard allowed={CLINICAL_ROLES} children={<ReportsInventoryPage />} />,
       },
       {
         path: "users",
