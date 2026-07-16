@@ -157,6 +157,14 @@ const ReportsInventoryPage = lazy(() =>
     default: m.ReportsInventoryPage,
   })),
 );
+const UsersPage = lazy(() =>
+  import("@/features/users/pages/users-page").then((m) => ({ default: m.UsersPage })),
+);
+const UserDetailsPage = lazy(() =>
+  import("@/features/users/pages/user-details-page").then((m) => ({
+    default: m.UserDetailsPage,
+  })),
+);
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -289,11 +297,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: (
-          <RoleGuard allowed={[ROLES.ADMIN]}>
-            <PlaceholderPage moduleKey="users" />
-          </RoleGuard>
-        ),
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<UsersPage />} />,
+      },
+      {
+        path: "users/:userId",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<UserDetailsPage />} />,
       },
       {
         path: "settings",

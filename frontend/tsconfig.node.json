@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
     "composite": true,
+    // Projeto composite precisa emitir; direcionamos a saída para uma pasta
+    // descartável dentro de node_modules para que os .js/.d.ts compilados NÃO
+    // fiquem ao lado de vite.config.ts (o Vite carrega .js antes de .ts, então
+    // um vite.config.js compilado aqui faria shadow do source — foi o que
+    // impediu o `host: true` de valer e escondeu o IP de rede no dev).
+    "outDir": "./node_modules/.tmp/node-build",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2022",
     "lib": ["ES2023"],
