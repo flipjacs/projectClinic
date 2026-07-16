@@ -3,7 +3,6 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { RoleGuard } from "@/components/auth/role-guard";
-import { PlaceholderPage } from "@/components/feedback/placeholder-page";
 import { UnauthorizedPage } from "@/components/feedback/unauthorized-page";
 import { AppLayout } from "@/components/layout/app-layout";
 import { ALL_ROLES, CLINICAL_ROLES } from "@/lib/permissions";
@@ -165,6 +164,51 @@ const UserDetailsPage = lazy(() =>
     default: m.UserDetailsPage,
   })),
 );
+const SettingsPage = lazy(() =>
+  import("@/features/settings/pages/settings-page").then((m) => ({
+    default: m.SettingsPage,
+  })),
+);
+const ClinicSettingsPage = lazy(() =>
+  import("@/features/settings/pages/clinic-settings-page").then((m) => ({
+    default: m.ClinicSettingsPage,
+  })),
+);
+const UsersSettingsPage = lazy(() =>
+  import("@/features/settings/pages/users-settings-page").then((m) => ({
+    default: m.UsersSettingsPage,
+  })),
+);
+const SecuritySettingsPage = lazy(() =>
+  import("@/features/settings/pages/security-settings-page").then((m) => ({
+    default: m.SecuritySettingsPage,
+  })),
+);
+const NotificationsSettingsPage = lazy(() =>
+  import("@/features/settings/pages/notifications-settings-page").then((m) => ({
+    default: m.NotificationsSettingsPage,
+  })),
+);
+const IntegrationsSettingsPage = lazy(() =>
+  import("@/features/settings/pages/integrations-settings-page").then((m) => ({
+    default: m.IntegrationsSettingsPage,
+  })),
+);
+const AppearanceSettingsPage = lazy(() =>
+  import("@/features/settings/pages/appearance-settings-page").then((m) => ({
+    default: m.AppearanceSettingsPage,
+  })),
+);
+const BackupSettingsPage = lazy(() =>
+  import("@/features/settings/pages/backup-settings-page").then((m) => ({
+    default: m.BackupSettingsPage,
+  })),
+);
+const SystemSettingsPage = lazy(() =>
+  import("@/features/settings/pages/system-settings-page").then((m) => ({
+    default: m.SystemSettingsPage,
+  })),
+);
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -305,11 +349,45 @@ export const router = createBrowserRouter([
       },
       {
         path: "settings",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<SettingsPage />} />,
+      },
+      {
+        path: "settings/clinic",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<ClinicSettingsPage />} />,
+      },
+      {
+        path: "settings/users",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<UsersSettingsPage />} />,
+      },
+      {
+        path: "settings/security",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<SecuritySettingsPage />} />,
+      },
+      {
+        path: "settings/notifications",
         element: (
-          <RoleGuard allowed={[ROLES.ADMIN]}>
-            <PlaceholderPage moduleKey="settings" />
-          </RoleGuard>
+          <RoleGuard allowed={[ROLES.ADMIN]} children={<NotificationsSettingsPage />} />
         ),
+      },
+      {
+        path: "settings/integrations",
+        element: (
+          <RoleGuard allowed={[ROLES.ADMIN]} children={<IntegrationsSettingsPage />} />
+        ),
+      },
+      {
+        path: "settings/appearance",
+        element: (
+          <RoleGuard allowed={[ROLES.ADMIN]} children={<AppearanceSettingsPage />} />
+        ),
+      },
+      {
+        path: "settings/backup",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<BackupSettingsPage />} />,
+      },
+      {
+        path: "settings/system",
+        element: <RoleGuard allowed={[ROLES.ADMIN]} children={<SystemSettingsPage />} />,
       },
     ],
   },

@@ -84,7 +84,9 @@ export function Modal({
             animate="animate"
             exit="exit"
             className={cn(
-              "flex w-full flex-col bg-white shadow-elevated outline-none",
+              // `relative` garante que o painel pinte acima do backdrop mesmo
+              // depois que o Framer remove o transform ao fim da animação.
+              "relative flex w-full flex-col bg-white shadow-elevated outline-none",
               isMobile
                 ? "max-h-[92vh] rounded-t-2xl border-t border-line"
                 : cn("max-h-[85vh] rounded-2xl border border-line", sizes[size]),
