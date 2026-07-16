@@ -39,6 +39,13 @@ export const panelVariants: Variants = {
   exit: { opacity: 0, scale: 0.98, y: 4, transition: { duration: 0.13, ease: EASE } },
 };
 
+/** Bottom sheet (mobile): desliza de baixo para cima. */
+export const sheetVariants: Variants = {
+  initial: { y: "100%" },
+  animate: { y: 0, transition: { duration: 0.28, ease: EASE } },
+  exit: { y: "100%", transition: { duration: 0.2, ease: EASE } },
+};
+
 /** Item que chega de baixo (toasts, notificações). */
 export const toastVariants: Variants = {
   initial: { opacity: 0, y: 12, scale: 0.98 },

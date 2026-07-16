@@ -1,14 +1,18 @@
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
-import { Loading } from "@/components/feedback/loading";
 import { PageHeader } from "@/components/layout/page-header";
+import { SectionTitle } from "@/components/layout/section-title";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { fieldBase } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "@/hooks/use-debounce";
+import { cn } from "@/utils/cn";
+import { PatientSummaryCards } from "../components/patient-summary-cards";
 import { PatientTable } from "../components/patient-table";
 import { usePatientsList } from "../hooks/use-patients";
 
@@ -29,7 +33,6 @@ export function PatientsPage() {
 
   const { data, isLoading, isError, isFetching, refetch } = usePatientsList(params);
 
-  // Sempre que a busca/filtro muda, volta para a primeira página.
   function onSearchChange(value: string) {
     setSearchInput(value);
     setPage(1);
@@ -51,15 +54,36 @@ export function PatientsPage() {
         }
       />
 
+      <div className="mb-6">
+        <PatientSummaryCards />
+      </div>
+
+      <SectionTitle>Todos os pacientes</SectionTitle>
+
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute"
+            aria-hidden
+          />
           <input
+            type="search"
             value={searchInput}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar por nome, CPF ou telefone…"
-            className="h-10 w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm focus-visible:ring-2 focus-visible:ring-gold-400"
+            aria-label="Buscar paciente"
+            className={cn(fieldBase, "h-10 pl-9 pr-9 border-line hover:border-graphite-200")}
           />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              aria-label="Limpar busca"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-ink-mute transition-colors hover:bg-graphite-100 hover:text-ink"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <Checkbox
           label="Incluir inativos"
@@ -72,7 +96,11 @@ export function PatientsPage() {
       </div>
 
       {isLoading ? (
-        <Loading label="Carregando pacientes…" />
+        <div className="space-y-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 rounded-2xl" />
+          ))}
+        </div>
       ) : isError ? (
         <ErrorState onRetry={() => refetch()} />
       ) : !data || data.items.length === 0 ? (
@@ -96,7 +124,7 @@ export function PatientsPage() {
         <>
           <PatientTable patients={data.items} onOpen={(id) => navigate(`/patients/${id}`)} />
 
-          <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+          <div className="mt-4 flex items-center justify-between text-sm text-ink-mute">
             <span>
               {total} paciente(s){isFetching ? " · atualizando…" : ""}
             </span>

@@ -140,11 +140,7 @@ export function ItemDialog({ open, onClose, item }: ItemDialogProps) {
         </>
       }
     >
-      <form
-        id="item-form"
-        onSubmit={handleSubmit(onSubmit)}
-        className="max-h-[65vh] space-y-4 overflow-y-auto pr-0.5"
-      >
+      <form id="item-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
           label="Nome do material"
           placeholder="Ex.: Luva de procedimento M"

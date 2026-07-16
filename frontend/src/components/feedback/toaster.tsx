@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { CheckCircle2, Info, X, XCircle } from "lucide-react";
 
 import { toastVariants } from "@/lib/motion";
@@ -27,7 +27,7 @@ export function Toaster() {
         {toasts.map((t) => {
           const Icon = toneIcon[t.tone];
           return (
-            <motion.div
+            <m.div
               key={t.id}
               layout
               variants={toastVariants}
@@ -50,7 +50,7 @@ export function Toaster() {
               >
                 <X className="h-4 w-4" />
               </button>
-            </motion.div>
+            </m.div>
           );
         })}
       </AnimatePresence>

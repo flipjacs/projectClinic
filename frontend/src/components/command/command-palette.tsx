@@ -8,10 +8,11 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { overlayVariants, panelVariants } from "@/lib/motion";
 import { navSectionsForRole } from "@/lib/permissions";
@@ -45,8 +46,11 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+
+  useFocusTrap(panelRef, open);
 
   const commands = useMemo<Command[]>(() => {
     const role = user?.role;
@@ -177,7 +181,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-modal flex items-start justify-center p-4 pt-[12vh]">
-          <motion.div
+          <m.div
             variants={overlayVariants}
             initial="initial"
             animate="animate"
@@ -186,7 +190,9 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             onClick={onClose}
             aria-hidden
           />
-          <motion.div
+          <m.div
+            ref={panelRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label="Paleta de comandos"
@@ -194,7 +200,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-white shadow-elevated"
+            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-white shadow-elevated outline-none"
           >
         <div className="flex items-center gap-3 border-b border-line px-4">
           <Search className="h-5 w-5 shrink-0 text-ink-mute" aria-hidden />
@@ -280,7 +286,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             fechar
           </span>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>

@@ -7,7 +7,7 @@ import type { Patient } from "../types/patient";
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-gray-400">{label}</dt>
+      <dt className="text-xs uppercase tracking-wide text-ink-mute">{label}</dt>
       <dd className="mt-0.5 text-sm text-ink">{value || "—"}</dd>
     </div>
   );

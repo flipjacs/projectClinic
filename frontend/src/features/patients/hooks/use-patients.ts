@@ -34,6 +34,30 @@ export function usePatientsList(params: ListPatientsParams) {
   });
 }
 
+/**
+ * Contagens para o resumo da lista (ativos e total). Duas consultas leves
+ * (`page_size: 1`, só o `meta.total`) sob o prefixo ["patients"], então
+ * invalidam junto com o resto ao cadastrar/(in)ativar.
+ */
+export function usePatientCounts() {
+  const active = useQuery({
+    queryKey: ["patients", "count", "active"] as const,
+    queryFn: () => listPatients({ includeInactive: false, page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+  });
+  const all = useQuery({
+    queryKey: ["patients", "count", "all"] as const,
+    queryFn: () => listPatients({ includeInactive: true, page: 1, pageSize: 1 }),
+    staleTime: 60_000,
+  });
+  return {
+    total: all.data?.meta.total ?? 0,
+    active: active.data?.meta.total ?? 0,
+    inactive: (all.data?.meta.total ?? 0) - (active.data?.meta.total ?? 0),
+    isLoading: active.isLoading || all.isLoading,
+  };
+}
+
 export function usePatient(id: number) {
   return useQuery({
     queryKey: patientKeys.detail(id),

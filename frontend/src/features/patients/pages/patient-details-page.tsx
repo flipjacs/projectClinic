@@ -205,7 +205,7 @@ export function PatientDetailsPage() {
                 <CardTitle>Informações de saúde</CardTitle>
               </CardHeader>
               <CardBody>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-ink-mute">
                   Seção clínica restrita a dentistas e administradores.
                 </p>
               </CardBody>

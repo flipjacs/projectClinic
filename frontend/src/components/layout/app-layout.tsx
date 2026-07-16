@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
@@ -34,6 +34,13 @@ export function AppLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-canvas">
+      {/* Pular a navegação — visível apenas ao receber foco por teclado. */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-tooltip focus:rounded-lg focus:bg-gold-500 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:shadow-elevated"
+      >
+        Pular para o conteúdo
+      </a>
       <Sidebar role={user?.role} />
       <MobileSidebar
         open={mobileOpen}
@@ -47,9 +54,13 @@ export function AppLayout() {
           onOpenMenu={() => setMobileOpen(true)}
           onOpenPalette={() => setPaletteOpen(true)}
         />
-        <main className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 focus:outline-none"
+        >
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div
+            <m.div
               key={location.pathname}
               variants={pageVariants}
               initial="initial"
@@ -60,7 +71,7 @@ export function AppLayout() {
               <Suspense fallback={<Loading fullPage label="Carregando…" />}>
                 <Outlet />
               </Suspense>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </main>
       </div>

@@ -1,8 +1,10 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect, useId, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 
-import { overlayVariants, panelVariants } from "@/lib/motion";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useIsMobile } from "@/hooks/use-media-query";
+import { overlayVariants, panelVariants, sheetVariants } from "@/lib/motion";
 import { cn } from "@/utils/cn";
 
 interface ModalProps {
@@ -12,7 +14,7 @@ interface ModalProps {
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
-  /** Largura máxima do diálogo. */
+  /** Largura máxima do diálogo (desktop). No mobile vira bottom sheet. */
   size?: "sm" | "md" | "lg" | "xl";
 }
 
@@ -33,6 +35,11 @@ export function Modal({
   size = "md",
 }: ModalProps) {
   const titleId = useId();
+  const descId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
+  useFocusTrap(panelRef, open);
 
   // Fecha no Escape e trava o scroll do body enquanto aberto.
   useEffect(() => {
@@ -50,8 +57,13 @@ export function Modal({
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
-          <motion.div
+        <div
+          className={cn(
+            "fixed inset-0 z-modal flex justify-center",
+            isMobile ? "items-end" : "items-center p-4",
+          )}
+        >
+          <m.div
             variants={overlayVariants}
             initial="initial"
             animate="animate"
@@ -60,25 +72,41 @@ export function Modal({
             onClick={onClose}
             aria-hidden
           />
-          <motion.div
+          <m.div
+            ref={panelRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            variants={panelVariants}
+            aria-describedby={description ? descId : undefined}
+            variants={isMobile ? sheetVariants : panelVariants}
             initial="initial"
             animate="animate"
             exit="exit"
             className={cn(
-              "relative w-full rounded-2xl border border-line bg-white shadow-elevated",
-              sizes[size],
+              "flex w-full flex-col bg-white shadow-elevated outline-none",
+              isMobile
+                ? "max-h-[92vh] rounded-t-2xl border-t border-line"
+                : cn("max-h-[85vh] rounded-2xl border border-line", sizes[size]),
             )}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+            {/* Alça do bottom sheet (mobile). */}
+            {isMobile && (
+              <div className="flex justify-center pt-2" aria-hidden>
+                <span className="h-1 w-9 rounded-full bg-graphite-200" />
+              </div>
+            )}
+
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line px-5 py-4">
               <div className="min-w-0">
                 <h3 id={titleId} className="text-sm font-semibold tracking-tight text-ink">
                   {title}
                 </h3>
-                {description && <p className="mt-0.5 text-xs text-ink-mute">{description}</p>}
+                {description && (
+                  <p id={descId} className="mt-0.5 text-xs text-ink-mute">
+                    {description}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
@@ -89,13 +117,17 @@ export function Modal({
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="px-5 py-4 text-sm text-ink-soft">{children}</div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4 text-sm text-ink-soft">
+              {children}
+            </div>
+
             {footer && (
-              <div className="flex justify-end gap-2 border-t border-line px-5 py-4">
+              <div className="flex shrink-0 justify-end gap-2 border-t border-line px-5 py-4">
                 {footer}
               </div>
             )}
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>
