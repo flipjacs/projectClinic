@@ -7,6 +7,7 @@ import { ErrorState } from "@/components/feedback/error-state";
 import { Loading } from "@/components/feedback/loading";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useDebounce } from "@/hooks/use-debounce";
 import { PatientTable } from "../components/patient-table";
 import { usePatientsList } from "../hooks/use-patients";
@@ -60,18 +61,14 @@ export function PatientsPage() {
             className="h-10 w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm focus-visible:ring-2 focus-visible:ring-gold-400"
           />
         </div>
-        <label className="flex items-center gap-2 text-sm text-gray-600">
-          <input
-            type="checkbox"
-            checked={includeInactive}
-            onChange={(e) => {
-              setIncludeInactive(e.target.checked);
-              setPage(1);
-            }}
-            className="h-4 w-4 rounded border-gray-300 text-gold-500 focus-visible:ring-gold-400"
-          />
-          Incluir inativos
-        </label>
+        <Checkbox
+          label="Incluir inativos"
+          checked={includeInactive}
+          onChange={(e) => {
+            setIncludeInactive(e.target.checked);
+            setPage(1);
+          }}
+        />
       </div>
 
       {isLoading ? (

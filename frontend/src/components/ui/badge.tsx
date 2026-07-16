@@ -12,10 +12,10 @@ type Tone = "gold" | "neutral" | "success" | "warning" | "danger" | "info";
 const tones: Record<Tone, string> = {
   gold: "bg-gold-100 text-gold-800 ring-gold-200",
   neutral: "bg-graphite-100 text-graphite-700 ring-graphite-200",
-  success: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  warning: "bg-amber-50 text-amber-700 ring-amber-200",
-  danger: "bg-red-50 text-red-700 ring-red-200",
-  info: "bg-sky-50 text-sky-700 ring-sky-200",
+  success: "bg-success-50 text-success-700 ring-success-200",
+  warning: "bg-warning-50 text-warning-700 ring-warning-200",
+  danger: "bg-danger-50 text-danger-700 ring-danger-200",
+  info: "bg-info-50 text-info-700 ring-info-200",
 };
 
 interface BadgeProps {

@@ -49,6 +49,52 @@ export default {
         // Papel — fundo quente e calmo das telas (não é creme saturado).
         canvas: "#f7f7f5",
         line: "#e9e8e4", // borda quente discreta sobre papel
+
+        // ------------------------------------------------------------------
+        // Tokens semânticos de estado. Mesmos hexes das paletas Tailwind já
+        // usadas nas telas (emerald/amber/red/sky) — agora com NOME de
+        // intenção: novos componentes falam "success", não "emerald".
+        // ------------------------------------------------------------------
+        success: {
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          300: "#6ee7b7",
+          500: "#10b981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+        },
+        warning: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#b45309",
+          800: "#92400e",
+        },
+        danger: {
+          50: "#fef2f2",
+          100: "#fee2e2",
+          200: "#fecaca",
+          300: "#fca5a5",
+          500: "#ef4444",
+          600: "#dc2626",
+          700: "#b91c1c",
+          800: "#991b1b",
+        },
+        info: {
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+        },
       },
       fontFamily: {
         sans: [
@@ -76,6 +122,8 @@ export default {
           "0 4px 6px -2px rgba(20,22,27,0.05), 0 12px 28px -6px rgba(20,22,27,0.12)",
         ring: "0 0 0 1px rgba(20,22,27,0.06)",
         "gold-glow": "0 6px 20px -6px rgba(187,143,44,0.45)",
+        // Elevação de hover para cartões interativos (lift discreto).
+        lift: "0 6px 16px -4px rgba(20,22,27,0.08), 0 16px 32px -8px rgba(20,22,27,0.14)",
       },
       zIndex: {
         dropdown: "1000",
@@ -106,15 +154,29 @@ export default {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        // Toasts e elementos que "chegam" de baixo.
+        "slide-in-up": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // Micro-bounce de entrada (overshoot de 1% — perceptível, não teatral).
+        pop: {
+          "0%": { opacity: "0", transform: "scale(0.96)" },
+          "60%": { opacity: "1", transform: "scale(1.01)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 200ms ease-out both",
         "fade-in-up": "fade-in-up 280ms cubic-bezier(0.22,1,0.36,1) both",
         "scale-in": "scale-in 180ms cubic-bezier(0.22,1,0.36,1) both",
         "slide-in-left": "slide-in-left 240ms cubic-bezier(0.22,1,0.36,1) both",
+        "slide-in-up": "slide-in-up 240ms cubic-bezier(0.22,1,0.36,1) both",
+        pop: "pop 220ms cubic-bezier(0.22,1,0.36,1) both",
       },
       transitionTimingFunction: {
         "out-quint": "cubic-bezier(0.22,1,0.36,1)",
+        "out-expo": "cubic-bezier(0.16,1,0.3,1)",
       },
     },
   },

@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 
 import { cn } from "@/utils/cn";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "outline";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "outline" | "success";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -26,7 +26,10 @@ const variants: Record<Variant, string> = {
   ghost: "bg-transparent text-ink-soft hover:bg-graphite-100 active:bg-graphite-200/60",
   // Destrutivo.
   danger:
-    "bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 disabled:bg-red-300",
+    "bg-danger-600 text-white shadow-sm hover:bg-danger-700 active:bg-danger-800 disabled:bg-danger-300",
+  // Confirmação positiva (ex.: concluir, aprovar).
+  success:
+    "bg-success-600 text-white shadow-sm hover:bg-success-700 active:bg-success-800 disabled:bg-success-300",
 };
 
 const sizes: Record<Size, string> = {

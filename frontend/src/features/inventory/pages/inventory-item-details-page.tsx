@@ -14,6 +14,7 @@ import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ConfirmDialog } from "@/components/feedback/confirm-dialog";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
@@ -144,10 +145,13 @@ export function InventoryItemDetailsPage() {
 
   return (
     <>
-      <Button variant="ghost" className="mb-4" onClick={() => navigate("/inventory/items")}>
-        <ArrowLeft className="h-4 w-4" />
-        Voltar
-      </Button>
+      <Breadcrumbs
+        items={[
+          { label: "Estoque", to: "/inventory" },
+          { label: "Itens", to: "/inventory/items" },
+          { label: item.name },
+        ]}
+      />
 
       {/* Cabeçalho */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

@@ -12,8 +12,9 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const variants: Record<CardVariant, string> = {
   default: "shadow-card",
   elevated: "shadow-elevated",
+  // Elevação com lift discreto: sobe 2px e a sombra acompanha.
   interactive:
-    "shadow-card transition-shadow duration-150 ease-out-quint hover:shadow-soft hover:border-graphite-200 cursor-pointer",
+    "shadow-card transition-[box-shadow,transform,border-color] duration-200 ease-out-quint hover:-translate-y-0.5 hover:shadow-lift hover:border-graphite-200 cursor-pointer",
 };
 
 export function Card({ className, children, variant = "default", ...props }: CardProps) {

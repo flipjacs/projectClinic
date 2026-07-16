@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
+import { AnimatedNumber } from "@/components/motion/animated-number";
 import { cn } from "@/utils/cn";
 
 interface StatCardProps {
@@ -33,7 +34,7 @@ export function StatCard({ label, value, icon: Icon, hint, highlight }: StatCard
         <div className="min-w-0">
           <p className="text-[13px] font-medium text-ink-mute">{label}</p>
           <p className="mt-1.5 truncate text-3xl font-semibold tracking-tight text-ink">
-            {value}
+            {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
           </p>
           {hint && <p className="mt-1.5 text-xs text-ink-mute">{hint}</p>}
         </div>

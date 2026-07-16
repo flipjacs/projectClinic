@@ -1,4 +1,5 @@
 import { Card, CardBody } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { STATUS_LABELS, STATUS_ORDER } from "../constants";
@@ -83,15 +84,11 @@ export function AppointmentFilters({ value, onChange, dentists }: AppointmentFil
         </div>
 
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-ink-mute">
-            <input
-              type="checkbox"
-              checked={value.includeCanceled}
-              onChange={(e) => patch({ includeCanceled: e.target.checked })}
-              className="h-4 w-4 rounded border-line text-gold-500 focus-visible:ring-gold-400"
-            />
-            Incluir canceladas
-          </label>
+          <Checkbox
+            label="Incluir canceladas"
+            checked={value.includeCanceled}
+            onChange={(e) => patch({ includeCanceled: e.target.checked })}
+          />
           {hasActiveFilter && (
             <button
               type="button"

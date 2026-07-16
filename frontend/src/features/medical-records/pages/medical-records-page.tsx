@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ErrorState } from "@/components/feedback/error-state";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePatient } from "@/features/patients/hooks/use-patients";
 import { toApiError } from "@/lib/api";
@@ -74,18 +75,14 @@ export function MedicalRecordsPage() {
       />
 
       <div className="mb-4 flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm text-ink-mute">
-          <input
-            type="checkbox"
-            checked={includeInactive}
-            onChange={(e) => {
-              setIncludeInactive(e.target.checked);
-              setPage(1);
-            }}
-            className="h-4 w-4 rounded border-line text-gold-500 focus-visible:ring-gold-400"
-          />
-          Incluir inativados
-        </label>
+        <Checkbox
+          label="Incluir inativados"
+          checked={includeInactive}
+          onChange={(e) => {
+            setIncludeInactive(e.target.checked);
+            setPage(1);
+          }}
+        />
         {total > 0 && (
           <span className="text-sm text-ink-mute">
             {total} registro(s){isFetching ? " · atualizando…" : ""}

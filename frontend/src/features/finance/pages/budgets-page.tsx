@@ -7,6 +7,7 @@ import { ErrorState } from "@/components/feedback/error-state";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PatientSelect } from "@/features/appointments/components/patient-select";
@@ -94,18 +95,14 @@ export function BudgetsPage() {
               }}
             />
           </div>
-          <label className="flex items-center gap-2 text-sm text-ink-mute">
-            <input
-              type="checkbox"
-              checked={includeCanceled}
-              onChange={(e) => {
-                setIncludeCanceled(e.target.checked);
-                setPage(1);
-              }}
-              className="h-4 w-4 rounded border-line text-gold-500 focus-visible:ring-gold-400"
-            />
-            Incluir cancelados
-          </label>
+          <Checkbox
+            label="Incluir cancelados"
+            checked={includeCanceled}
+            onChange={(e) => {
+              setIncludeCanceled(e.target.checked);
+              setPage(1);
+            }}
+          />
         </CardBody>
       </Card>
 

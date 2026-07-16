@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Controller, useForm, type FieldErrors } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/stores/toast-store";
 import { healthSchema, type HealthFormValues } from "../schemas/patient-schema";
@@ -26,24 +27,6 @@ const EMPTY: HealthFormValues = {
   medication_description: "",
   health_observations: "",
 };
-
-function Toggle({
-  label,
-  checked,
-  ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <label className="flex items-center gap-2 text-sm font-medium text-ink">
-      <input
-        type="checkbox"
-        checked={checked}
-        className="h-4 w-4 rounded border-gray-300 text-gold-500 focus-visible:ring-gold-400"
-        {...props}
-      />
-      {label}
-    </label>
-  );
-}
 
 export function PatientHealthForm({
   defaultValues,
@@ -103,7 +86,7 @@ export function PatientHealthForm({
   return (
     <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-5" noValidate>
       <div className="space-y-3" ref={diseaseGroupRef}>
-        <Toggle
+        <Switch
           label="Possui doença / condição"
           checked={hasDisease}
           aria-expanded={hasDisease}
@@ -142,7 +125,7 @@ export function PatientHealthForm({
       </div>
 
       <div className="space-y-3">
-        <Toggle
+        <Switch
           label="Possui alergia"
           checked={hasAllergy}
           aria-expanded={hasAllergy}
@@ -159,7 +142,7 @@ export function PatientHealthForm({
       </div>
 
       <div className="space-y-3">
-        <Toggle
+        <Switch
           label="Usa medicação contínua"
           checked={usesMedication}
           aria-expanded={usesMedication}

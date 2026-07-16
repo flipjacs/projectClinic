@@ -1,5 +1,6 @@
 import { ArrowLeftRight, Eye, Pencil } from "lucide-react";
 
+import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/utils/cn";
 import { CATEGORY_LABELS, UNIT_SHORT_LABELS } from "../constants";
 import { formatQuantity, quantityToNumber } from "../utils/inventory-status";
@@ -13,28 +14,6 @@ interface InventoryTableProps {
   onOpen: (item: InventoryItem) => void;
   onEdit?: (item: InventoryItem) => void;
   onMove?: (item: InventoryItem) => void;
-}
-
-function IconAction({
-  label,
-  icon: Icon,
-  onClick,
-}: {
-  label: string;
-  icon: typeof Eye;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={label}
-      aria-label={label}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-ink-mute transition-colors hover:bg-graphite-100 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
-    >
-      <Icon className="h-4 w-4" aria-hidden />
-    </button>
-  );
 }
 
 export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTableProps) {
@@ -117,16 +96,16 @@ export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTable
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-0.5">
-                      <IconAction label="Ver detalhes" icon={Eye} onClick={() => onOpen(item)} />
+                      <IconButton label="Ver detalhes" icon={Eye} onClick={() => onOpen(item)} />
                       {onMove && (
-                        <IconAction
+                        <IconButton
                           label="Movimentar"
                           icon={ArrowLeftRight}
                           onClick={() => onMove(item)}
                         />
                       )}
                       {onEdit && (
-                        <IconAction label="Editar" icon={Pencil} onClick={() => onEdit(item)} />
+                        <IconButton label="Editar" icon={Pencil} onClick={() => onEdit(item)} />
                       )}
                     </div>
                   </td>

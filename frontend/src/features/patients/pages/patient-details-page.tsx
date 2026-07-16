@@ -1,7 +1,8 @@
-import { ArrowLeft, FileText, Pencil, Power } from "lucide-react";
+import { FileText, Pencil, Power } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ConfirmDialog } from "@/components/feedback/confirm-dialog";
 import { ErrorState } from "@/components/feedback/error-state";
 import { Loading } from "@/components/feedback/loading";
@@ -86,15 +87,14 @@ export function PatientDetailsPage() {
 
   return (
     <>
+      <Breadcrumbs
+        items={[{ label: "Pacientes", to: "/patients" }, { label: patient.name }]}
+      />
       <PageHeader
         title={patient.name}
         description="Ficha completa do paciente."
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => navigate("/patients")}>
-              <ArrowLeft className="h-4 w-4" />
-              Voltar
-            </Button>
             <Button variant="secondary" onClick={() => navigate(`/patients/${patient.id}/edit`)}>
               <Pencil className="h-4 w-4" />
               Editar

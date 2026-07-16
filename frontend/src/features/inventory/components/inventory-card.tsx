@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { AnimatedNumber } from "@/components/motion/animated-number";
 import { cn } from "@/utils/cn";
 
 export type InventoryCardTone =
@@ -88,7 +89,7 @@ export function InventoryCard({
               emphasize ? VALUE_TONE[tone] : "text-ink",
             )}
           >
-            {value}
+            {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
           </p>
           {hint && <p className="mt-1.5 text-xs text-ink-mute">{hint}</p>}
         </div>
