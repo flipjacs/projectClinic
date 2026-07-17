@@ -3,7 +3,6 @@ import { CircleDot } from "lucide-react";
 import { useFormContext, useFormState } from "react-hook-form";
 
 import { EASE } from "@/lib/motion";
-import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
 import { SaveActionsBar } from "./save-actions-bar";
 
 /**
@@ -12,7 +11,7 @@ import { SaveActionsBar } from "./save-actions-bar";
  * Só ele assina o formState — o resto do formulário não re-renderiza.
  */
 export function UnsavedChangesBanner() {
-  const { control } = useFormContext<ClinicSettingsFormValues>();
+  const { control } = useFormContext();
   const { isDirty } = useFormState({ control });
 
   return (

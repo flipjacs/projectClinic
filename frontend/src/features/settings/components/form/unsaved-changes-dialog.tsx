@@ -3,17 +3,16 @@ import { useFormContext, useFormState } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useUnsavedChangesGuard } from "../../hooks/use-unsaved-changes-guard";
-import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
-import { useClinicFormActions } from "./clinic-form-provider";
+import { useSettingsFormActions } from "./settings-form-provider";
 
 /**
  * Diálogo exibido ao tentar sair da página com alterações pendentes.
  * Três saídas, todas explícitas: salvar e sair, descartar e sair, ou ficar.
  */
 export function UnsavedChangesDialog() {
-  const { control, reset } = useFormContext<ClinicSettingsFormValues>();
+  const { control, reset } = useFormContext();
   const { isDirty, isSubmitting } = useFormState({ control });
-  const { submitForm } = useClinicFormActions();
+  const { submitForm } = useSettingsFormActions();
   const blocker = useUnsavedChangesGuard(isDirty);
 
   if (blocker.state !== "blocked") return null;

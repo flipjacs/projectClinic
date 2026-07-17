@@ -1,15 +1,14 @@
 import { useFormContext, useFormState } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
 
 /**
- * Ações do formulário da Clínica: Salvar (desabilitado enquanto nada mudou)
- * e Descartar (volta aos últimos valores salvos). Vive dentro do <form> do
- * ClinicFormProvider — o submit é o submit real do formulário.
+ * Ações dos formulários de Configurações: Salvar (desabilitado enquanto nada
+ * mudou) e Descartar (volta aos últimos valores salvos). Vive dentro do
+ * <form> do SettingsFormProvider — o submit é o submit real do formulário.
  */
 export function SaveActionsBar() {
-  const { control, reset } = useFormContext<ClinicSettingsFormValues>();
+  const { control, reset } = useFormContext();
   const { isDirty, isSubmitting } = useFormState({ control });
 
   return (

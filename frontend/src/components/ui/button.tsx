@@ -40,12 +40,24 @@ const sizes: Record<Size, string> = {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant = "primary", size = "md", isLoading, disabled, children, ...props },
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      // Padrão explícito: botão só submete formulário quando pedir type="submit".
+      // Evita que ações em diálogos dentro de um <form> disparem o submit da página.
+      type = "button",
+      isLoading,
+      disabled,
+      children,
+      ...props
+    },
     ref,
   ) => {
     return (
       <button
         ref={ref}
+        type={type}
         disabled={disabled || isLoading}
         aria-busy={isLoading || undefined}
         className={cn(

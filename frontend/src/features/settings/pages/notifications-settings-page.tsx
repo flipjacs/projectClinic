@@ -1,50 +1,59 @@
-import { MessageSquareText } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
+import { ErrorState } from "@/components/feedback/error-state";
 import {
-  SettingsGroup,
-  SettingsPageShell,
-  SettingsPlaceholder,
-  SettingsSection,
-  SettingsSwitch,
-} from "../components";
+  defaultNotificationSettings,
+  notificationSettingsSchema,
+} from "../schemas/notifications-schema";
+import { SettingsPageShell } from "../components";
+import { SettingsFormSkeleton } from "../components/settings-form-skeleton";
+import {
+  SettingsFormProvider,
+  UnsavedChangesBanner,
+  UnsavedChangesDialog,
+} from "../components/form";
+import {
+  NOTIFICATION_GROUPS,
+  NotificationChannelsCard,
+  NotificationGroupCard,
+} from "../components/notifications";
+import {
+  useNotificationSettings,
+  useUpdateNotificationSettings,
+} from "../hooks/use-notification-settings";
 
+/**
+ * Configurações → Notificações. Preferências agrupadas por área (config
+ * declarativa), pré-visualização da mensagem e canais com disponibilidade
+ * explícita — mesmo padrão de dirty tracking das demais páginas.
+ */
 export function NotificationsSettingsPage() {
+  const query = useNotificationSettings();
+  const mutation = useUpdateNotificationSettings();
+
   return (
     <SettingsPageShell categoryKey="notifications">
-      <SettingsGroup>
-        <SettingsSection
-          title="Avisos automáticos"
-          description="Pré-visualização das preferências que estarão disponíveis. Os controles serão liberados junto com o envio de e-mails."
-          badge={<Badge tone="gold">Em breve</Badge>}
-        >
-          <SettingsSwitch
-            label="Lembrete de consulta"
-            description="Avisa o paciente por e-mail um dia antes do horário marcado."
-            disabled
-          />
-          <SettingsSwitch
-            label="Cobranças pendentes"
-            description="Notifica a administração sobre pagamentos em atraso."
-            disabled
-          />
-          <SettingsSwitch
-            label="Estoque baixo"
-            description="Alerta quando um item atinge o estoque mínimo definido."
-            disabled
-          />
-        </SettingsSection>
-
-        <SettingsPlaceholder
-          icon={MessageSquareText}
-          title="Novos canais de aviso"
-          description="Além do e-mail, outros canais chegam nas próximas fases."
-          planned={[
-            { title: "SMS", text: "Lembretes por mensagem de texto." },
-            { title: "Resumo diário", text: "Agenda do dia enviada à equipe pela manhã." },
-          ]}
+      {query.isLoading ? (
+        <SettingsFormSkeleton cards={4} />
+      ) : query.isError ? (
+        <ErrorState
+          title="Não foi possível carregar as preferências de notificação"
+          onRetry={() => void query.refetch()}
         />
-      </SettingsGroup>
+      ) : (
+        <div className="max-w-3xl">
+          <SettingsFormProvider
+            schema={notificationSettingsSchema}
+            defaultValues={query.data ?? defaultNotificationSettings()}
+            onSave={(values) => mutation.mutateAsync(values)}
+          >
+            {NOTIFICATION_GROUPS.map((group) => (
+              <NotificationGroupCard key={group.key} group={group} />
+            ))}
+            <NotificationChannelsCard />
+            <UnsavedChangesBanner />
+            <UnsavedChangesDialog />
+          </SettingsFormProvider>
+        </div>
+      )}
     </SettingsPageShell>
   );
 }

@@ -5,7 +5,6 @@ export { ClinicGeneralCard } from "./clinic-general-card";
 export { ClinicNotesCard } from "./clinic-notes-card";
 export { ClinicScheduleCard } from "./clinic-schedule-card";
 export { LogoUploader } from "./logo-uploader";
-export { SaveActionsBar } from "./save-actions-bar";
-export { UnsavedChangesBanner } from "./unsaved-changes-banner";
-export { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 export { WorkingHoursTable } from "./working-hours-table";
+// Kit genérico de formulário — compartilhado com Segurança e Notificações.
+export { SaveActionsBar, UnsavedChangesBanner, UnsavedChangesDialog } from "../form";

@@ -44,8 +44,9 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     description: "Senhas, sessões, autenticação em duas etapas e auditoria.",
     path: "/settings/security",
     icon: ShieldCheck,
-    status: "soon",
-    count: 5,
+    // "attention" até a política ser persistida pelo backend.
+    status: "attention",
+    count: 16,
     keywords: ["senha", "sessao", "2fa", "auditoria", "privacidade", "lgpd"],
   },
   {
@@ -54,8 +55,9 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     description: "Lembretes de consulta, cobranças e alertas de estoque.",
     path: "/settings/notifications",
     icon: BellRing,
-    status: "soon",
-    count: 5,
+    // "attention" até as preferências serem persistidas pelo backend.
+    status: "attention",
+    count: 19,
     keywords: ["email", "sms", "lembrete", "alerta", "aviso", "cobranca"],
   },
   {

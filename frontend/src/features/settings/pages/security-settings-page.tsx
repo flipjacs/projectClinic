@@ -1,42 +1,62 @@
-import { ShieldCheck } from "lucide-react";
-
+import { ErrorState } from "@/components/feedback/error-state";
 import {
-  SettingsDangerZone,
-  SettingsGroup,
-  SettingsPageShell,
-  SettingsPlaceholder,
-} from "../components";
+  defaultSecuritySettings,
+  securitySettingsSchema,
+} from "../schemas/security-schema";
+import { SettingsPageShell } from "../components";
+import { SettingsFormSkeleton } from "../components/settings-form-skeleton";
+import {
+  SettingsFormProvider,
+  UnsavedChangesBanner,
+  UnsavedChangesDialog,
+} from "../components/form";
+import {
+  AuditCard,
+  PasswordPolicyCard,
+  PrivacyCard,
+  SecuritySessionCard,
+  TwoFactorCard,
+} from "../components/security";
+import {
+  useSecuritySettings,
+  useUpdateSecuritySettings,
+} from "../hooks/use-security-settings";
 
+/**
+ * Configurações → Segurança. Política de senhas editável (form com dirty
+ * tracking); sessões, 2FA, auditoria e privacidade com arquitetura pronta e
+ * disponibilidade explícita de cada recurso.
+ */
 export function SecuritySettingsPage() {
+  const query = useSecuritySettings();
+  const mutation = useUpdateSecuritySettings();
+
   return (
     <SettingsPageShell categoryKey="security">
-      <SettingsGroup>
-        <SettingsPlaceholder
-          icon={ShieldCheck}
-          description="As políticas de segurança do sistema serão controladas aqui. O acesso por perfil e a proteção das rotas já estão ativos."
-          planned={[
-            { title: "Política de senhas", text: "Tamanho mínimo, complexidade e validade." },
-            { title: "Tempo de sessão", text: "Encerramento automático por inatividade." },
-            { title: "Autenticação em duas etapas", text: "Camada extra de proteção no login." },
-            { title: "Trilha de auditoria", text: "Registro de ações sensíveis por usuário." },
-            { title: "Privacidade", text: "Controles de dados pessoais (LGPD)." },
-          ]}
+      {query.isLoading ? (
+        <SettingsFormSkeleton cards={3} />
+      ) : query.isError ? (
+        <ErrorState
+          title="Não foi possível carregar as configurações de segurança"
+          onRetry={() => void query.refetch()}
         />
-
-        <SettingsDangerZone
-          actions={[
-            {
-              key: "end-sessions",
-              label: "Encerrar todas as sessões",
-              description: "Desconecta todos os usuários ativos, inclusive você.",
-              buttonLabel: "Encerrar sessões",
-              confirmTitle: "Encerrar todas as sessões?",
-              confirmMessage:
-                "Todos os usuários serão desconectados imediatamente e precisarão entrar de novo. Esta ação não apaga nenhum dado.",
-            },
-          ]}
-        />
-      </SettingsGroup>
+      ) : (
+        <div className="max-w-3xl">
+          <SettingsFormProvider
+            schema={securitySettingsSchema}
+            defaultValues={query.data ?? defaultSecuritySettings()}
+            onSave={(values) => mutation.mutateAsync(values)}
+          >
+            <PasswordPolicyCard />
+            <SecuritySessionCard />
+            <TwoFactorCard />
+            <AuditCard />
+            <PrivacyCard />
+            <UnsavedChangesBanner />
+            <UnsavedChangesDialog />
+          </SettingsFormProvider>
+        </div>
+      )}
     </SettingsPageShell>
   );
 }

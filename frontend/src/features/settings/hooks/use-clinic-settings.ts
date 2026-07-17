@@ -1,7 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
-import { apiErrorDetail, toApiError } from "@/lib/api";
 import { toast } from "@/stores/toast-store";
 import type { ClinicSettingsFormValues } from "../schemas/clinic-schema";
 import {
@@ -9,6 +7,7 @@ import {
   updateClinicSettings,
   uploadClinicLogo,
 } from "../services/settings-api";
+import { notifySettingsSaveError } from "./settings-feedback";
 
 export const clinicSettingsKeys = {
   all: ["settings", "clinic"] as const,
@@ -52,16 +51,6 @@ export function useUpdateClinicSettings() {
       qc.setQueryData(clinicSettingsKeys.all, saved);
       toast.success("Configurações da clínica salvas.");
     },
-    onError: (error) => {
-      // Endpoint ainda não implantado no backend: mensagem honesta, sem
-      // parecer falha do usuário. Os dados permanecem intactos na tela.
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        toast.error(
-          "O servidor ainda não oferece o salvamento destas configurações. Suas alterações permanecem nesta tela.",
-        );
-        return;
-      }
-      toast.error(apiErrorDetail(error) ?? toApiError(error).message);
-    },
+    onError: notifySettingsSaveError,
   });
 }
