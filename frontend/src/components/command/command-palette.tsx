@@ -18,6 +18,7 @@ import { overlayVariants, panelVariants } from "@/lib/motion";
 import { navSectionsForRole } from "@/lib/permissions";
 import { ROLES } from "@/types/roles";
 import { cn } from "@/utils/cn";
+import { normalizeText } from "@/utils/text";
 
 interface Command {
   id: string;
@@ -27,13 +28,6 @@ interface Command {
   path: string;
   /** Termos extras para busca (sinônimos). */
   keywords?: string;
-}
-
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "");
 }
 
 interface CommandPaletteProps {
@@ -109,11 +103,11 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   }, [user?.role]);
 
   const results = useMemo(() => {
-    const q = normalize(query.trim());
+    const q = normalizeText(query);
     if (!q) return commands;
     return commands
       .map((c) => {
-        const haystack = normalize(`${c.label} ${c.keywords ?? ""}`);
+        const haystack = normalizeText(`${c.label} ${c.keywords ?? ""}`);
         const idx = haystack.indexOf(q);
         return { c, idx };
       })

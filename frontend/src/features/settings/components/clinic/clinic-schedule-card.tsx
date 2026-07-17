@@ -1,19 +1,18 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock } from "lucide-react";
+
+import { FeatureCard } from "../feature-card";
 import { WorkingHoursTable } from "./working-hours-table";
 
 /** Horário de funcionamento semanal da clínica. */
 export function ClinicScheduleCard() {
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Horário de funcionamento</CardTitle>
-          <p className="mt-0.5 text-xs text-ink-mute">
-            Dias e horários em que a clínica atende. A agenda usará esta grade.
-          </p>
-        </div>
-      </CardHeader>
+    <FeatureCard
+      icon={Clock}
+      title="Horário de funcionamento"
+      description="Dias e horários em que a clínica atende. A agenda usará esta grade."
+      flush
+    >
       <WorkingHoursTable />
-    </Card>
+    </FeatureCard>
   );
 }

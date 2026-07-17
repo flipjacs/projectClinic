@@ -1,7 +1,8 @@
+import { Image as ImageIcon } from "lucide-react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
+import { FeatureCard } from "../feature-card";
 import { LogoUploader } from "./logo-uploader";
 
 /** Logos da clínica — o principal (documentos) e o reduzido (ícones). */
@@ -9,16 +10,12 @@ export function ClinicBrandingCard() {
   const { control } = useFormContext<ClinicSettingsFormValues>();
 
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Identidade visual</CardTitle>
-          <p className="mt-0.5 text-xs text-ink-mute">
-            Imagens exibidas no sistema e nos documentos gerados.
-          </p>
-        </div>
-      </CardHeader>
-      <CardBody className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto]">
+    <FeatureCard
+      icon={ImageIcon}
+      title="Identidade visual"
+      description="Imagens exibidas no sistema e nos documentos gerados."
+    >
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto]">
         <Controller
           control={control}
           name="branding.logo"
@@ -47,7 +44,7 @@ export function ClinicBrandingCard() {
             />
           )}
         />
-      </CardBody>
-    </Card>
+      </div>
+    </FeatureCard>
   );
 }

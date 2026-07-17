@@ -5,7 +5,7 @@ import {
   defaultClinicSettings,
   type ClinicSettingsFormValues,
 } from "../../schemas/clinic-schema";
-import { SettingsFormProvider, useSettingsFormActions } from "../form";
+import { SettingsFormProvider } from "../form";
 
 interface ClinicFormProviderProps {
   /** Valores vindos do servidor; `null` = nunca salvos (usa os padrões). */
@@ -38,6 +38,3 @@ export function ClinicFormProvider({
     </SettingsFormProvider>
   );
 }
-
-/** Alias histórico da Fase 2 — mesma ação, nome específico da Clínica. */
-export const useClinicFormActions = useSettingsFormActions;

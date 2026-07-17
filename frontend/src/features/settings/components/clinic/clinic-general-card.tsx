@@ -1,9 +1,10 @@
+import { Building2 } from "lucide-react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { maskPhone } from "@/utils/masks";
 import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
+import { FeatureCard } from "../feature-card";
 
 /** Identificação e contatos da clínica — o que aparece em documentos. */
 export function ClinicGeneralCard() {
@@ -15,16 +16,12 @@ export function ClinicGeneralCard() {
   const e = errors.general;
 
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Informações gerais</CardTitle>
-          <p className="mt-0.5 text-xs text-ink-mute">
-            Identificação usada em recibos, orçamentos e comunicações.
-          </p>
-        </div>
-      </CardHeader>
-      <CardBody className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <FeatureCard
+      icon={Building2}
+      title="Informações gerais"
+      description="Identificação usada em recibos, orçamentos e comunicações."
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Input
           label="Nome da clínica *"
           autoComplete="organization"
@@ -109,7 +106,7 @@ export function ClinicGeneralCard() {
           error={e?.website?.message}
           {...register("general.website")}
         />
-      </CardBody>
-    </Card>
+      </div>
+    </FeatureCard>
   );
 }

@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
 /**
- * Linha de configuração dentro de uma <SettingsSection>: rótulo + descrição à
- * esquerda, controle (switch, botão, valor) à direita. Em telas estreitas o
- * controle desce para baixo do texto.
+ * Linha de configuração dentro de um card: rótulo + descrição à esquerda,
+ * controle (switch, botão, valor) à direita. Em telas estreitas o controle
+ * desce para baixo do texto.
  */
 export function SettingsItem({
   label,

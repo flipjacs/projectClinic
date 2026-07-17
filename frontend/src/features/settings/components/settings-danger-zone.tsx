@@ -1,8 +1,9 @@
 import { TriangleAlert } from "lucide-react";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
-import { ConfirmDialog } from "@/components/feedback/confirm-dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Modal } from "@/components/ui/modal";
 import { toast } from "@/stores/toast-store";
 
 export interface DangerAction {
@@ -12,6 +13,13 @@ export interface DangerAction {
   buttonLabel: string;
   confirmTitle: string;
   confirmMessage: string;
+  /**
+   * Confirmação dupla: além do diálogo, exige marcar a caixa de
+   * reconhecimento antes de habilitar o botão destrutivo.
+   */
+  doubleConfirm?: boolean;
+  /** Estado de carregamento da ação (mutation em andamento). */
+  isLoading?: boolean;
   /** Sem handler = ação planejada: confirma e avisa que chega em breve. */
   onConfirm?: () => void;
 }
@@ -19,8 +27,8 @@ export interface DangerAction {
 /**
  * Zona de risco das páginas de Configurações. Toda ação aqui é destrutiva ou
  * de alto impacto: o visual é inconfundível (vermelho, isolado do resto) e a
- * execução SEMPRE passa por um diálogo de confirmação — inclusive as ações
- * ainda não implementadas.
+ * execução SEMPRE passa por um diálogo de confirmação — com reconhecimento
+ * explícito extra quando a ação é irreversível (`doubleConfirm`).
  */
 export function SettingsDangerZone({
   description = "Ações de alto impacto. Cada uma exige confirmação antes de executar.",
@@ -31,6 +39,12 @@ export function SettingsDangerZone({
 }) {
   const headingId = useId();
   const [pending, setPending] = useState<DangerAction | null>(null);
+  const [acknowledged, setAcknowledged] = useState(false);
+
+  // Cada abertura de diálogo começa com o reconhecimento desmarcado.
+  useEffect(() => {
+    if (pending) setAcknowledged(false);
+  }, [pending]);
 
   function handleConfirm() {
     if (!pending) return;
@@ -38,6 +52,8 @@ export function SettingsDangerZone({
     else toast.info("Esta ação estará disponível em uma próxima fase.");
     setPending(null);
   }
+
+  const confirmBlocked = Boolean(pending?.doubleConfirm) && !acknowledged;
 
   return (
     <section aria-labelledby={headingId}>
@@ -63,6 +79,7 @@ export function SettingsDangerZone({
               variant="secondary"
               size="sm"
               onClick={() => setPending(action)}
+              isLoading={action.isLoading}
               className="shrink-0 border-danger-200 text-danger-700 hover:bg-danger-50 active:bg-danger-100"
             >
               {action.buttonLabel}
@@ -71,15 +88,34 @@ export function SettingsDangerZone({
         ))}
       </div>
 
-      <ConfirmDialog
-        open={pending !== null}
-        tone="danger"
-        title={pending?.confirmTitle ?? ""}
-        message={pending?.confirmMessage ?? ""}
-        confirmLabel={pending?.buttonLabel}
-        onConfirm={handleConfirm}
-        onClose={() => setPending(null)}
-      />
+      {pending && (
+        <Modal
+          open
+          onClose={() => setPending(null)}
+          title={pending.confirmTitle}
+          footer={
+            <>
+              <Button variant="secondary" onClick={() => setPending(null)}>
+                Cancelar
+              </Button>
+              <Button variant="danger" onClick={handleConfirm} disabled={confirmBlocked}>
+                {pending.buttonLabel}
+              </Button>
+            </>
+          }
+        >
+          <p>{pending.confirmMessage}</p>
+          {pending.doubleConfirm && (
+            <Checkbox
+              className="mt-4"
+              checked={acknowledged}
+              onChange={(event) => setAcknowledged(event.target.checked)}
+              label="Entendo as consequências desta ação"
+              description="Esta operação não pode ser desfeita pelo sistema."
+            />
+          )}
+        </Modal>
+      )}
     </section>
   );
 }

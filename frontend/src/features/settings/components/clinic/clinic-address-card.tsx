@@ -1,12 +1,12 @@
-import { Loader2 } from "lucide-react";
+import { Loader2, MapPin } from "lucide-react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { maskCEP, onlyDigits, UFS } from "@/utils/masks";
 import { useCepLookup } from "../../hooks/use-cep-lookup";
 import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
+import { FeatureCard } from "../feature-card";
 
 const UF_OPTIONS = UFS.map((uf) => ({ value: uf, label: uf }));
 
@@ -48,16 +48,12 @@ export function ClinicAddressCard() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Endereço</CardTitle>
-          <p className="mt-0.5 text-xs text-ink-mute">
-            Informe o CEP para preencher o endereço automaticamente.
-          </p>
-        </div>
-      </CardHeader>
-      <CardBody className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+    <FeatureCard
+      icon={MapPin}
+      title="Endereço"
+      description="Informe o CEP para preencher o endereço automaticamente."
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
         <div className="relative sm:col-span-2">
           <Controller
             control={control}
@@ -151,7 +147,7 @@ export function ClinicAddressCard() {
             {...register("address.country")}
           />
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </FeatureCard>
   );
 }

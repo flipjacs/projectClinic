@@ -1,9 +1,11 @@
 import { useFormContext, useWatch, type Control } from "react-hook-form";
 
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileText } from "lucide-react";
+
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/utils/cn";
 import type { ClinicSettingsFormValues } from "../../schemas/clinic-schema";
+import { FeatureCard } from "../feature-card";
 
 type NoteField = keyof ClinicSettingsFormValues["notes"];
 
@@ -78,16 +80,12 @@ export function ClinicNotesCard() {
   } = useFormContext<ClinicSettingsFormValues>();
 
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Informações adicionais</CardTitle>
-          <p className="mt-0.5 text-xs text-ink-mute">
-            Textos que o sistema reutiliza em documentos e comunicações.
-          </p>
-        </div>
-      </CardHeader>
-      <CardBody className="grid grid-cols-1 gap-5">
+    <FeatureCard
+      icon={FileText}
+      title="Informações adicionais"
+      description="Textos que o sistema reutiliza em documentos e comunicações."
+    >
+      <div className="grid grid-cols-1 gap-5">
         {NOTE_FIELDS.map((field) => (
           <div key={field.name} className="relative">
             <Textarea
@@ -101,7 +99,7 @@ export function ClinicNotesCard() {
             <CharCount control={control} name={field.name} max={field.max} />
           </div>
         ))}
-      </CardBody>
-    </Card>
+      </div>
+    </FeatureCard>
   );
 }

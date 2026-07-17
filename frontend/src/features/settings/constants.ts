@@ -76,8 +76,9 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     description: "Tema, densidade da interface, idioma e acessibilidade.",
     path: "/settings/appearance",
     icon: Palette,
-    status: "soon",
-    count: 5,
+    // "attention" até as preferências serem persistidas pelo backend.
+    status: "attention",
+    count: 8,
     keywords: ["tema", "cor", "densidade", "idioma", "escuro", "acessibilidade"],
   },
   {
@@ -87,7 +88,7 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     path: "/settings/backup",
     icon: DatabaseBackup,
     status: "attention",
-    count: 4,
+    count: 7,
     keywords: ["copia", "restaurar", "exportar", "banco", "dados", "seguranca"],
   },
   {
@@ -97,7 +98,7 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     path: "/settings/system",
     icon: MonitorCog,
     status: "configured",
-    count: 6,
+    count: 15,
     keywords: ["versao", "ambiente", "log", "atualizacao", "api", "saude", "status"],
   },
 ];
