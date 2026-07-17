@@ -40,19 +40,19 @@ function RecentPatientsTable({ rows }: { rows: PatientSnapshot[] }) {
 
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-graphite-50">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
-              <th className="px-4 py-3">Nome</th>
-              <th className="px-4 py-3">Telefone</th>
-              <th className="px-4 py-3">Cidade</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Cadastro</th>
+              <th className="px-5 py-3">Nome</th>
+              <th className="px-5 py-3">Telefone</th>
+              <th className="px-5 py-3">Cidade</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3">Cadastro</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {rows.map((p) => (
               <tr key={p.id} className="transition-colors hover:bg-canvas/60">
-                <td className="px-4 py-3">
+                <td className="px-5 py-3">
                   <Link
                     to={`/patients/${p.id}`}
                     className="font-medium text-ink hover:text-gold-700"
@@ -60,16 +60,16 @@ function RecentPatientsTable({ rows }: { rows: PatientSnapshot[] }) {
                     {p.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-ink-soft">{p.phone}</td>
-                <td className="px-4 py-3 text-ink-soft">
+                <td className="px-5 py-3 text-ink-soft">{p.phone}</td>
+                <td className="px-5 py-3 text-ink-soft">
                   {p.city ? `${p.city}${p.state ? `/${p.state}` : ""}` : "—"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-3">
                   <Badge tone={p.is_active ? "success" : "neutral"}>
                     {p.is_active ? "Ativo" : "Inativo"}
                   </Badge>
                 </td>
-                <td className="px-4 py-3 text-ink-soft">{formatDateOnly(p.created_at)}</td>
+                <td className="px-5 py-3 text-ink-soft">{formatDateOnly(p.created_at)}</td>
               </tr>
             ))}
           </tbody>

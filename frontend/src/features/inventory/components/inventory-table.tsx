@@ -35,16 +35,16 @@ export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTable
       {/* Desktop: tabela */}
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-graphite-50">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
-              <th className="px-4 py-3">Item</th>
-              <th className="px-4 py-3">Categoria</th>
-              <th className="px-4 py-3 text-right">Quantidade</th>
-              <th className="px-4 py-3 text-right">Mínimo</th>
-              <th className="px-4 py-3">Fornecedor</th>
-              <th className="px-4 py-3">Validade</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">Ações</th>
+              <th className="px-5 py-3">Item</th>
+              <th className="px-5 py-3">Categoria</th>
+              <th className="px-5 py-3 text-right">Quantidade</th>
+              <th className="px-5 py-3 text-right">Mínimo</th>
+              <th className="px-5 py-3">Fornecedor</th>
+              <th className="px-5 py-3">Validade</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3 text-right">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -59,7 +59,7 @@ export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTable
                   key={item.id}
                   className="group transition-colors hover:bg-canvas/60"
                 >
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3">
                     <button
                       type="button"
                       onClick={() => onOpen(item)}
@@ -68,10 +68,10 @@ export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTable
                       {item.name}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-ink-soft">
+                  <td className="px-5 py-3 text-ink-soft">
                     {CATEGORY_LABELS[item.category]}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
+                  <td className="px-5 py-3 text-right tabular-nums">
                     <span
                       className={cn(
                         "font-medium",
@@ -82,19 +82,19 @@ export function InventoryTable({ items, onOpen, onEdit, onMove }: InventoryTable
                     </span>{" "}
                     <span className="text-xs text-ink-mute">{unit}</span>
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-ink-mute">
+                  <td className="px-5 py-3 text-right tabular-nums text-ink-mute">
                     {formatQuantity(item.minimum_quantity)}
                   </td>
-                  <td className="px-4 py-3 text-ink-soft">
+                  <td className="px-5 py-3 text-ink-soft">
                     {item.supplier || <span className="text-ink-mute">—</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3">
                     <ExpirationCell item={item} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3">
                     <InventoryStatusBadge item={item} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3">
                     <div className="flex items-center justify-end gap-0.5">
                       <IconButton label="Ver detalhes" icon={Eye} onClick={() => onOpen(item)} />
                       {onMove && (

@@ -92,7 +92,7 @@ export function UserDetailsPage() {
           <div className="flex items-center gap-4">
             <UserAvatar name={user.name} role={user.role} size="lg" inactive={!user.is_active} />
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-semibold tracking-tight text-ink">
+              <h1 className="truncate text-2xl font-semibold tracking-tight text-ink">
                 {user.name}
               </h1>
               <p className="mt-0.5 truncate text-sm text-ink-mute">{user.email}</p>

@@ -41,7 +41,7 @@ export function PatientTable({ patients, onOpen }: PatientTableProps) {
       {/* Desktop: tabela */}
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-graphite-50">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
               <th className="px-5 py-3">Paciente</th>
               <th className="px-5 py-3">Telefone</th>

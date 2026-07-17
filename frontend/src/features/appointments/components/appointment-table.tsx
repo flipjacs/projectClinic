@@ -21,7 +21,7 @@ export function AppointmentTable({ appointments, onOpen }: AppointmentTableProps
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-white">
+    <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-card">
       <table className="min-w-full divide-y divide-line">
         <thead className="bg-graphite-50">
           <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">

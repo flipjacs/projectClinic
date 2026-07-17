@@ -61,19 +61,19 @@ function PendingTable({ rows }: { rows: PendingPaymentSnapshot[] }) {
 
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-graphite-50">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
-              <th className="px-4 py-3">Paciente</th>
-              <th className="px-4 py-3 text-right">Valor</th>
-              <th className="px-4 py-3">Método</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Vencimento</th>
+              <th className="px-5 py-3">Paciente</th>
+              <th className="px-5 py-3 text-right">Valor</th>
+              <th className="px-5 py-3">Método</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3">Vencimento</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {rows.map((p) => (
               <tr key={p.id} className="transition-colors hover:bg-canvas/60">
-                <td className="px-4 py-3">
+                <td className="px-5 py-3">
                   <Link
                     to={`/patients/${p.patient_id}`}
                     className="font-medium text-gold-700 hover:underline"
@@ -81,17 +81,17 @@ function PendingTable({ rows }: { rows: PendingPaymentSnapshot[] }) {
                     Paciente #{p.patient_id}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-right font-medium tabular-nums text-ink">
+                <td className="px-5 py-3 text-right font-medium tabular-nums text-ink">
                   {formatMoney(p.amount)}
                 </td>
-                <td className="px-4 py-3 text-ink-soft">
+                <td className="px-5 py-3 text-ink-soft">
                   {PAYMENT_METHOD_LABELS[p.payment_method]}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-3">
                   <Badge tone={STATUS_TONE[p.status]}>{PAYMENT_STATUS_LABELS[p.status]}</Badge>
                 </td>
                 <td
-                  className={`px-4 py-3 ${
+                  className={`px-5 py-3 ${
                     isOverdue(p.due_date) ? "font-medium text-red-600" : "text-ink-soft"
                   }`}
                 >

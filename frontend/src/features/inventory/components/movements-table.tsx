@@ -73,28 +73,28 @@ export function MovementsTable({ movements, unit, hideItemLink }: MovementsTable
       {/* Desktop: tabela */}
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-graphite-50">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
-              <th className="px-4 py-3">Data</th>
-              <th className="px-4 py-3">Tipo</th>
-              {!hideItemLink && <th className="px-4 py-3">Item</th>}
-              <th className="px-4 py-3 text-right">Quantidade</th>
-              <th className="px-4 py-3 text-right">Saldo</th>
-              <th className="px-4 py-3">Responsável</th>
-              <th className="px-4 py-3">Motivo</th>
+              <th className="px-5 py-3">Data</th>
+              <th className="px-5 py-3">Tipo</th>
+              {!hideItemLink && <th className="px-5 py-3">Item</th>}
+              <th className="px-5 py-3 text-right">Quantidade</th>
+              <th className="px-5 py-3 text-right">Saldo</th>
+              <th className="px-5 py-3">Responsável</th>
+              <th className="px-5 py-3">Motivo</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {movements.map((m) => (
               <tr key={m.id} className="transition-colors hover:bg-canvas/60">
-                <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
+                <td className="whitespace-nowrap px-5 py-3 text-ink-soft">
                   {formatDateTime(m.created_at)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-3">
                   <MovementTypeBadge type={m.movement_type} />
                 </td>
                 {!hideItemLink && (
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3">
                     <Link
                       to={`/inventory/items/${m.inventory_item_id}`}
                       className="font-medium text-gold-700 hover:underline"
@@ -103,15 +103,15 @@ export function MovementsTable({ movements, unit, hideItemLink }: MovementsTable
                     </Link>
                   </td>
                 )}
-                <td className="px-4 py-3 text-right font-medium tabular-nums">
+                <td className="px-5 py-3 text-right font-medium tabular-nums">
                   <QuantityCell m={m} unit={unit} />
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums text-ink-soft">
+                <td className="px-5 py-3 text-right tabular-nums text-ink-soft">
                   {formatQuantity(m.resulting_quantity)}
                   {unit ? ` ${unit}` : ""}
                 </td>
-                <td className="px-4 py-3 text-ink-soft">{m.created_by.name}</td>
-                <td className="max-w-[16rem] truncate px-4 py-3 text-ink-mute" title={m.reason ?? undefined}>
+                <td className="px-5 py-3 text-ink-soft">{m.created_by.name}</td>
+                <td className="max-w-[16rem] truncate px-5 py-3 text-ink-mute" title={m.reason ?? undefined}>
                   {m.reason || "—"}
                 </td>
               </tr>

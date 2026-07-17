@@ -50,7 +50,10 @@ function SortHeader({
         type="button"
         onClick={() => onSort(column)}
         className={cn(
-          "-ml-1 inline-flex items-center gap-1 rounded px-1 py-0.5 transition-colors hover:text-ink",
+          // `uppercase` explícito: o Preflight do Tailwind zera text-transform
+          // em <button>, então sem isto o rótulo ordenável fugiria do caixa-alta
+          // herdado do cabeçalho (ficaria em caixa mista com as demais colunas).
+          "-ml-1 inline-flex items-center gap-1 rounded px-1 py-0.5 uppercase tracking-wide transition-colors hover:text-ink",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400",
           active ? "text-ink" : "text-ink-mute",
         )}
@@ -119,7 +122,7 @@ export function UsersTable({
       <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
+            <thead className="bg-graphite-50">
               <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide">
                 <SortHeader label="Usuário" column="name" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortHeader label="Cargo" column="role" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
