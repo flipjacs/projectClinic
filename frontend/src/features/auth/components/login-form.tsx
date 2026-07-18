@@ -1,10 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toApiError } from "@/lib/api";
 import { loginSchema, type LoginFormValues } from "../schemas/login-schema";
 import { useAuth } from "../hooks/use-auth";
 
@@ -27,9 +29,16 @@ export function LoginForm() {
     try {
       await login(values);
       navigate("/dashboard", { replace: true });
-    } catch {
-      // Mensagem amigável e genérica — nunca expõe detalhes técnicos do backend.
-      setFormError("E-mail ou senha incorretos. Verifique e tente novamente.");
+    } catch (error) {
+      // Distingue credenciais inválidas (401) de falha de conexão/timeout —
+      // antes, qualquer erro (inclusive rede) virava "senha incorreta", o que
+      // confundia quando o servidor estava inacessível.
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        setFormError("E-mail ou senha incorretos. Verifique e tente novamente.");
+      } else {
+        // "Sem conexão com o servidor…" etc. — mensagem segura, sem detalhes técnicos.
+        setFormError(toApiError(error).message);
+      }
     }
   }
 

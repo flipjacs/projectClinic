@@ -79,7 +79,21 @@ confiável e organizado, sem cara de template genérico de dashboard.
 - **StatCard** — métrica do painel (número grande + dica, destaque dourado).
 - **FormField**, **Skeleton** — apoio a formulários e carregamento.
 - **Feedback** — `Loading`, `EmptyState`, `ErrorState`, `RouteFallback`,
-  `UnauthorizedPage` e `PlaceholderPage` (telas planejadas dos módulos futuros).
+  `UnauthorizedPage` e a rede de segurança `error-boundary`
+  (`AppErrorBoundary` + `RouteErrorBoundary`): qualquer erro de renderização
+  cai numa tela de recuperação premium — nunca em tela branca nem expondo stack
+  trace ao usuário.
+
+## Aparência (tema, densidade, acessibilidade)
+
+- **Tema** claro/escuro/sistema, **densidade** (compacto/confortável/espaçoso) e
+  preferências de acessibilidade vêm do backend por usuário
+  (`GET/PUT /settings/appearance`); o `localStorage` é só cache anti-flicker.
+- Aplicados via `data-theme` / `data-density` / `data-contrast` no `<html>` a
+  partir de tokens semânticos (`canvas`, `surface`, `ink`, `line` = variáveis CSS
+  RGB no `index.css`), então um só conjunto de classes serve claro e escuro.
+- `MotionConfig` respeita `prefers-reduced-motion` (e o toggle de acessibilidade);
+  um script inline no `index.html` evita flash de tema no primeiro paint.
 
 ## Estrutura de pastas
 
@@ -96,15 +110,23 @@ src/
 │   │                     #   Unauthorized, Placeholder (+ module-config)
 │   └── auth/             # ProtectedRoute, RoleGuard
 ├── config/               # env.ts (VITE_API_URL)
-├── features/
+├── features/             # todos os módulos implementados:
 │   ├── auth/             # login, /auth/me, hook de sessão
 │   ├── dashboard/        # painel inicial (GET /dashboard)
 │   ├── patients/         # CRUD de pacientes + ficha de saúde
-│   └── medical-records/ appointments/ procedures/ finance/
-│       inventory/ reports/ users/        (próximas fases)
+│   ├── medical-records/  # prontuários clínicos
+│   ├── appointments/     # agenda
+│   ├── procedures/       # catálogo de procedimentos
+│   ├── finance/          # financeiro, orçamentos, pagamentos
+│   ├── inventory/        # estoque (itens + movimentações)
+│   ├── reports/          # relatórios (finance/patients/appointments/inventory)
+│   ├── users/            # gestão de usuários (ADMIN)
+│   └── settings/         # Configurações (clínica, segurança, notificações,
+│                         #   aparência, integrações, backup, sistema)
 ├── hooks/
 ├── lib/                  # api (Axios + interceptors), query-client, permissions
-├── stores/               # auth-store (token, Zustand + persist), toast-store
+├── stores/               # auth-store (token, Zustand + persist), toast-store,
+│                         #   appearance-store (tema/densidade)
 ├── types/                # api, roles
 ├── utils/                # cn, formatação pt-BR, masks
 ├── main.tsx
@@ -148,6 +170,8 @@ src/
 
 `/login`, `/dashboard`, `/unauthorized` e os módulos
 (`/patients`, `/appointments`, `/medical-records`, `/procedures`, `/finance`,
-`/inventory`, `/reports`, `/users`, `/settings`). Os módulos ainda não
-implementados têm **telas planejadas** (descrição + funcionalidades futuras),
-já protegidas por perfil, até serem construídos nas próximas fases.
+`/budgets`, `/payments`, `/inventory`, `/reports`, `/users`, `/settings/*`),
+todos implementados e protegidos por perfil (`ProtectedRoute` + `RoleGuard`).
+Cada rota tem `errorElement` (`RouteErrorBoundary`), então um erro de
+renderização numa página vira tela de recuperação — nunca a tela de erro crua do
+React Router (que exporia stack trace).

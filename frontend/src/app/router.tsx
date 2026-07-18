@@ -3,6 +3,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { RoleGuard } from "@/components/auth/role-guard";
+import { RouteErrorBoundary } from "@/components/feedback/error-boundary";
 import { UnauthorizedPage } from "@/components/feedback/unauthorized-page";
 import { AppLayout } from "@/components/layout/app-layout";
 import { ALL_ROLES, CLINICAL_ROLES } from "@/lib/permissions";
@@ -211,8 +212,12 @@ const SystemSettingsPage = lazy(() =>
 );
 
 export const router = createBrowserRouter([
-  { path: "/login", element: <LoginPage /> },
-  { path: "/unauthorized", element: <UnauthorizedPage /> },
+  { path: "/login", element: <LoginPage />, errorElement: <RouteErrorBoundary /> },
+  {
+    path: "/unauthorized",
+    element: <UnauthorizedPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
   {
     path: "/",
     element: (
@@ -220,6 +225,7 @@ export const router = createBrowserRouter([
         <AppLayout />
       </ProtectedRoute>
     ),
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "dashboard", element: <DashboardPage /> },

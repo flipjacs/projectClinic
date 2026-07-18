@@ -22,6 +22,7 @@ from app.modules.reports.routes import router as reports_router
 from app.modules.settings.routes import router as settings_router
 from app.modules.settings.security_routes import router as security_settings_router
 from app.modules.settings.appearance_routes import router as appearance_settings_router
+from app.modules.settings.notification_routes import router as notification_settings_router
 from app.shared.exceptions import AppException
 from app.shared.request_context import RequestContextMiddleware
 
@@ -131,6 +132,7 @@ def create_app() -> FastAPI:
     app.include_router(settings_router, prefix=api_prefix)
     app.include_router(security_settings_router, prefix=api_prefix)
     app.include_router(appearance_settings_router, prefix=api_prefix)
+    app.include_router(notification_settings_router, prefix=api_prefix)
 
     # Arquivos enviados (logos da clínica). Servidos como estáticos; o banco
     # guarda apenas o caminho relativo, nunca o binário. Cabeçalhos de defesa

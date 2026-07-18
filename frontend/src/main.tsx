@@ -4,6 +4,7 @@ import { RouterProvider } from "react-router-dom";
 
 import { AppProviders } from "@/app/providers";
 import { router } from "@/app/router";
+import { AppErrorBoundary } from "@/components/feedback/error-boundary";
 import { RouteFallback } from "@/components/feedback/route-fallback";
 import "./index.css";
 
@@ -14,10 +15,12 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <AppProviders>
-      <Suspense fallback={<RouteFallback />}>
-        <RouterProvider router={router} />
-      </Suspense>
-    </AppProviders>
+    <AppErrorBoundary>
+      <AppProviders>
+        <Suspense fallback={<RouteFallback />}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </AppProviders>
+    </AppErrorBoundary>
   </StrictMode>,
 );
