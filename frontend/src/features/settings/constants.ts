@@ -76,8 +76,7 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
     description: "Tema, densidade da interface, idioma e acessibilidade.",
     path: "/settings/appearance",
     icon: Palette,
-    // "attention" até as preferências serem persistidas pelo backend.
-    status: "attention",
+    status: "configured",
     count: 8,
     keywords: ["tema", "cor", "densidade", "idioma", "escuro", "acessibilidade"],
   },

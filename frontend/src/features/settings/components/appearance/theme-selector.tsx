@@ -1,6 +1,5 @@
 import { Palette } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/utils/cn";
 import { FeatureCard } from "../feature-card";
 import { OptionCardGroup } from "./option-card-group";
@@ -12,7 +11,7 @@ function ThemePreview({ dark, split }: { dark?: boolean; split?: boolean }) {
       aria-hidden
       className={cn(
         "relative h-16 overflow-hidden rounded-lg border",
-        dark ? "border-graphite-700 bg-graphite-900" : "border-line bg-white",
+        dark ? "border-graphite-700 bg-graphite-900" : "border-line bg-surface",
       )}
     >
       {split && (
@@ -28,34 +27,30 @@ function ThemePreview({ dark, split }: { dark?: boolean; split?: boolean }) {
   );
 }
 
-/** Escolha do tema da interface — claro hoje; escuro e automático a caminho. */
+/** Escolha do tema da interface: claro, escuro ou automático (segue o sistema). */
 export function ThemeSelector() {
   return (
     <FeatureCard
       icon={Palette}
       title="Tema"
-      description="Aparência geral da interface neste dispositivo."
+      description="Aparência geral da interface neste dispositivo. Aplicado ao salvar."
     >
       <OptionCardGroup
         name="theme"
         label="Tema da interface"
         options={[
-          { value: "light", label: "Claro", hint: "Tema atual do sistema.", preview: <ThemePreview /> },
+          { value: "light", label: "Claro", hint: "Fundo claro, ideal com boa luz.", preview: <ThemePreview /> },
           {
             value: "dark",
             label: "Escuro",
             hint: "Ideal para ambientes com pouca luz.",
             preview: <ThemePreview dark />,
-            badge: <Badge tone="gold">Em desenvolvimento</Badge>,
-            disabled: true,
           },
           {
             value: "system",
             label: "Sistema",
             hint: "Acompanha o tema do dispositivo.",
             preview: <ThemePreview split />,
-            badge: <Badge tone="gold">Em desenvolvimento</Badge>,
-            disabled: true,
           },
         ]}
       />

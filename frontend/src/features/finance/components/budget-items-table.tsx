@@ -47,7 +47,7 @@ export function BudgetItemsTable({
   return (
     <div className="overflow-hidden rounded-xl border border-line">
       <table className="min-w-full divide-y divide-line text-sm">
-        <thead className="bg-graphite-50">
+        <thead className="bg-surface-muted">
           <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
             <th className="px-4 py-2.5">Procedimento</th>
             <th className="px-4 py-2.5 w-24">Qtd</th>
@@ -97,7 +97,7 @@ export function BudgetItemsTable({
           ))}
         </tbody>
         <tfoot>
-          <tr className="border-t border-line bg-graphite-50/60">
+          <tr className="border-t border-line bg-surface-muted/60">
             <td colSpan={3} className="px-4 py-3 text-sm text-ink-mute">
               Total estimado · o total final é calculado pelo sistema
             </td>

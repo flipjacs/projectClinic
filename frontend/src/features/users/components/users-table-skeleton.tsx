@@ -11,7 +11,7 @@ export function UsersTableSkeleton({ rows = 6 }: { rows?: number }) {
       {/* Mobile: cartões */}
       <div className="space-y-3 sm:hidden">
         {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="rounded-2xl border border-line bg-white p-4 shadow-card">
+          <div key={i} className="rounded-2xl border border-line bg-surface p-4 shadow-card">
             <div className="flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded-full" />
               <div className="min-w-0 flex-1 space-y-1.5">
@@ -29,7 +29,7 @@ export function UsersTableSkeleton({ rows = 6 }: { rows?: number }) {
       </div>
 
       {/* Desktop: tabela */}
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-card sm:block">
         <div className="border-b border-line px-5 py-3">
           <Skeleton className="h-3 w-24" />
         </div>

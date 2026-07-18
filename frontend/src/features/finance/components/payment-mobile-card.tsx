@@ -14,7 +14,7 @@ export function PaymentMobileCard({ hidePatient, ...actionProps }: PaymentMobile
   const showActions = hasPaymentActions(actionProps);
 
   return (
-    <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="rounded-2xl border border-line bg-surface p-4 shadow-card">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           {!hidePatient && (

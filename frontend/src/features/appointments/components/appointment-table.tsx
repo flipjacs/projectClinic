@@ -21,9 +21,9 @@ export function AppointmentTable({ appointments, onOpen }: AppointmentTableProps
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-card">
+    <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-card">
       <table className="min-w-full divide-y divide-line">
-        <thead className="bg-graphite-50">
+        <thead className="bg-surface-muted">
           <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
             <th className="px-5 py-3">Data e hora</th>
             <th className="px-5 py-3">Paciente</th>

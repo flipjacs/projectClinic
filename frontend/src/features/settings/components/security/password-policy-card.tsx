@@ -92,6 +92,11 @@ export function PasswordPolicyCard() {
         description="A senha precisa conter ao menos uma letra maiúscula."
       />
       <FormSwitchRow<SecuritySettingsFormValues>
+        name="passwordPolicy.requireLowercase"
+        label="Exigir letras minúsculas"
+        description="A senha precisa conter ao menos uma letra minúscula."
+      />
+      <FormSwitchRow<SecuritySettingsFormValues>
         name="passwordPolicy.requireNumbers"
         label="Exigir números"
         description="A senha precisa conter ao menos um número."

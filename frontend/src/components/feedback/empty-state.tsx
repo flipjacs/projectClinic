@@ -15,12 +15,12 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-white/40 px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-surface/40 px-6 py-14 text-center">
       {/* Medalhão em camadas — halo dourado suave, sem ilustração rabiscada. */}
       <div className="relative mb-5 flex h-16 w-16 items-center justify-center" aria-hidden>
         <span className="absolute inset-0 rounded-full bg-gold-50" />
         <span className="absolute inset-[6px] rounded-full bg-gold-100/70" />
-        <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-card ring-1 ring-gold-200">
+        <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-card ring-1 ring-gold-200">
           <Icon className="h-5 w-5 text-gold-600" />
         </span>
       </div>

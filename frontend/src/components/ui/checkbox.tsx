@@ -30,7 +30,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           aria-hidden
           className={cn(
             "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px]",
-            "border border-graphite-200 bg-white shadow-sm",
+            "border border-graphite-200 bg-surface shadow-sm",
             "transition-[background-color,border-color,box-shadow] duration-150 ease-out-quint",
             "group-hover:border-gold-400",
             "peer-focus-visible:ring-2 peer-focus-visible:ring-gold-400 peer-focus-visible:ring-offset-2",

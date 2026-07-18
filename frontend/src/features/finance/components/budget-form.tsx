@@ -97,7 +97,7 @@ export function BudgetForm({ onSubmit, onCancel, isSubmitting }: BudgetFormProps
             {isDentist ? (
               <div>
                 <span className="mb-1.5 block text-sm font-medium text-ink">Profissional</span>
-                <div className="rounded-lg border border-line bg-graphite-50 px-3 py-2 text-sm font-medium text-ink">
+                <div className="rounded-lg border border-line bg-surface-muted px-3 py-2 text-sm font-medium text-ink">
                   Dr(a). {user?.name}
                 </div>
               </div>

@@ -11,7 +11,7 @@ function DensityPreview({ gap }: { gap: "compact" | "comfortable" | "spacious" }
     <div
       aria-hidden
       className={cn(
-        "flex h-16 flex-col justify-center rounded-lg border border-line bg-white p-2",
+        "flex h-16 flex-col justify-center rounded-lg border border-line bg-surface p-2",
         spacing,
       )}
     >

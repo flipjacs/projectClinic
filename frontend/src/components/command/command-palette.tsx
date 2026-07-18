@@ -194,7 +194,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-white shadow-elevated outline-none"
+            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-surface shadow-elevated outline-none"
           >
         <div className="flex items-center gap-3 border-b border-line px-4">
           <Search className="h-5 w-5 shrink-0 text-ink-mute" aria-hidden />
@@ -245,7 +245,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                       onClick={() => run(cmd)}
                       className={cn(
                         "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
-                        isActive ? "bg-gold-50 text-ink" : "text-ink-soft hover:bg-graphite-50",
+                        isActive ? "bg-gold-50 text-ink" : "text-ink-soft hover:bg-surface-muted",
                       )}
                     >
                       <Icon
@@ -289,7 +289,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex min-w-[1.25rem] items-center justify-center rounded border border-line bg-graphite-50 px-1 py-0.5 font-sans text-[11px] font-medium text-ink-soft">
+    <kbd className="inline-flex min-w-[1.25rem] items-center justify-center rounded border border-line bg-surface-muted px-1 py-0.5 font-sans text-[11px] font-medium text-ink-soft">
       {children}
     </kbd>
   );

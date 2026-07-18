@@ -17,7 +17,7 @@ function RecentPatientsTable({ rows }: { rows: PatientSnapshot[] }) {
     <>
       <div className="space-y-3 sm:hidden">
         {rows.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-line bg-white p-4 shadow-card">
+          <div key={p.id} className="rounded-2xl border border-line bg-surface p-4 shadow-card">
             <div className="flex items-center justify-between gap-2">
               <Link
                 to={`/patients/${p.id}`}
@@ -38,9 +38,9 @@ function RecentPatientsTable({ rows }: { rows: PatientSnapshot[] }) {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead className="bg-graphite-50">
+          <thead className="bg-surface-muted">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
               <th className="px-5 py-3">Nome</th>
               <th className="px-5 py-3">Telefone</th>

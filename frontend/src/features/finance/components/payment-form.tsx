@@ -97,7 +97,7 @@ export function PaymentForm({ onSubmit, onCancel, isSubmitting, initial }: Payme
           {initial ? (
             <div>
               <span className="mb-1.5 block text-sm font-medium text-ink">Paciente</span>
-              <div className="rounded-lg border border-line bg-graphite-50 px-3 py-2 text-sm font-medium text-ink">
+              <div className="rounded-lg border border-line bg-surface-muted px-3 py-2 text-sm font-medium text-ink">
                 {initial.patientName}
               </div>
             </div>

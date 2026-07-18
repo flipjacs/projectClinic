@@ -18,7 +18,10 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-RUN addgroup --system app && adduser --system --ingroup app app \
+# Diretório de mídia (logos). Criado antes do chown para que o volume nomeado
+# herde a propriedade do usuário `app` ao inicializar.
+RUN mkdir -p /app/media \
+    && addgroup --system app && adduser --system --ingroup app app \
     && chown -R app:app /app
 USER app
 

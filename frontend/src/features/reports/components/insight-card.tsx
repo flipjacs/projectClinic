@@ -23,7 +23,7 @@ export interface InsightCardProps {
 /** Cartão de insight automático: ícone, título curto e uma frase de apoio. */
 export function InsightCard({ icon: Icon, tone = "neutral", title, description }: InsightCardProps) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-4 shadow-card">
       <span
         className={cn(
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",

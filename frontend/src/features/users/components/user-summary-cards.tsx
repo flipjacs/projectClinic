@@ -98,7 +98,7 @@ export function UserSummaryCards({
             onClick={() => (active ? onSelect("all", "all") : onSelect(card.role, card.status))}
             aria-pressed={active}
             className={cn(
-              "group relative overflow-hidden rounded-2xl border bg-white p-4 text-left shadow-card",
+              "group relative overflow-hidden rounded-2xl border bg-surface p-4 text-left shadow-card",
               "transition-[box-shadow,border-color,transform] duration-150 ease-out-quint hover:shadow-soft",
               "active:scale-[0.985]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2",

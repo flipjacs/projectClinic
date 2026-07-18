@@ -41,6 +41,11 @@ class Settings(BaseSettings):
     db_name: str = "clinic_db"
     database_url: Optional[str] = None
 
+    # Uploads / mídia (armazenamento de arquivos — apenas caminhos no banco)
+    media_dir: str = "/app/media"
+    media_url_path: str = "/media"
+    max_logo_bytes: int = Field(default=2 * 1024 * 1024, ge=1024)  # 2 MB
+
     # CORS
     cors_origins: List[str] = Field(default_factory=list)
 

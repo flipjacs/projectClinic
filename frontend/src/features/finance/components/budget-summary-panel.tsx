@@ -39,7 +39,7 @@ export function BudgetSummaryPanel({
           </div>
         </dl>
 
-        <div className="mt-4 flex items-start gap-2 rounded-xl bg-graphite-50 px-3 py-2.5 text-xs text-ink-mute">
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-surface-muted px-3 py-2.5 text-xs text-ink-mute">
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-600" aria-hidden />
           <span>O backend calcula o total final com segurança.</span>
         </div>

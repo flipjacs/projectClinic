@@ -2,6 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+ * Tokens de tema (CSS variables). RGB "R G B" para compor com <alpha-value>
+ * do Tailwind. O tema é aplicado por `data-theme` no <html> (ThemeProvider);
+ * "system" é resolvido para light/dark antes de escrever o atributo.
+ * ------------------------------------------------------------------------- */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --canvas: 247 247 245;
+  --surface: 255 255 255;
+  --surface-muted: 245 246 247;
+  --ink: 25 27 31;
+  --ink-soft: 58 62 69;
+  --ink-mute: 107 112 121;
+  --line: 233 232 228;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: 20 22 27;        /* grafite profundo — mesma família da sidebar */
+  --surface: 27 30 36;       /* cartões */
+  --surface-muted: 38 42 49; /* cabeçalhos de tabela / hover */
+  --ink: 245 246 247;
+  --ink-soft: 201 204 209;
+  --ink-mute: 158 164 173;
+  --line: 47 51 59;
+}
+
+/* Contraste elevado (acessibilidade): reforça texto e bordas. */
+:root[data-contrast="high"] {
+  --ink-mute: 74 80 90;
+  --line: 176 178 172;
+}
+:root[data-theme="dark"][data-contrast="high"] {
+  --ink-mute: 205 210 217;
+  --line: 90 96 106;
+}
+
+/* Densidade: escala global via font-size do root (tudo em rem acompanha). */
+:root[data-density="compact"] {
+  font-size: 15px;
+}
+:root[data-density="comfortable"] {
+  font-size: 16px;
+}
+:root[data-density="spacious"] {
+  font-size: 17.5px;
+}
+
+/* Transição suave ao alternar tema. A classe é aplicada pelo ThemeProvider
+ * apenas durante a troca (~300ms) e removida em seguida — assim os hovers do
+ * dia a dia mantêm suas durações próprias. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-transition,
+  html.theme-transition * {
+    transition: background-color 0.25s ease, border-color 0.25s ease,
+      color 0.2s ease, fill 0.2s ease !important;
+  }
+}
+
 @layer base {
   html,
   body,

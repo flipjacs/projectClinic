@@ -40,15 +40,22 @@ export default {
           900: "#14161b", // fundo profundo / base da sidebar
           950: "#0e0f13",
         },
-        // Preto/grafite para textos.
+        // Tokens semânticos de superfície e texto — resolvidos por CSS
+        // variables (ver index.css) para suportar tema claro/escuro sem tocar
+        // os componentes. O valor light preserva exatamente a identidade atual.
         ink: {
-          DEFAULT: "#191b1f",
-          soft: "#3a3e45",
-          mute: "#6b7079",
+          DEFAULT: "rgb(var(--ink) / <alpha-value>)",
+          soft: "rgb(var(--ink-soft) / <alpha-value>)",
+          mute: "rgb(var(--ink-mute) / <alpha-value>)",
         },
-        // Papel — fundo quente e calmo das telas (não é creme saturado).
-        canvas: "#f7f7f5",
-        line: "#e9e8e4", // borda quente discreta sobre papel
+        // Fundo das telas (papel quente no claro; grafite profundo no escuro).
+        canvas: "rgb(var(--canvas) / <alpha-value>)",
+        // Superfície de cartões/inputs/tabelas (branco no claro).
+        surface: {
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          muted: "rgb(var(--surface-muted) / <alpha-value>)",
+        },
+        line: "rgb(var(--line) / <alpha-value>)", // borda discreta
 
         // ------------------------------------------------------------------
         // Tokens semânticos de estado. Mesmos hexes das paletas Tailwind já

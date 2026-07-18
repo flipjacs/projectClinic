@@ -21,7 +21,7 @@ export function StatCard({ label, value, icon: Icon, hint, highlight }: StatCard
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl border bg-white p-5 shadow-card",
+        "group relative overflow-hidden rounded-2xl border bg-surface p-5 shadow-card",
         "transition-shadow duration-150 ease-out-quint hover:shadow-soft",
         highlight ? "border-gold-200" : "border-line",
       )}

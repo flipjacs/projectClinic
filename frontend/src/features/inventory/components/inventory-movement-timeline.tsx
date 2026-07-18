@@ -70,7 +70,7 @@ export function InventoryMovementTimeline({ movements, unit, showItemLink }: Tim
                 )}
               </p>
               {m.reason && (
-                <p className="mt-1 rounded-md bg-graphite-50 px-2 py-1 text-xs text-ink-soft">
+                <p className="mt-1 rounded-md bg-surface-muted px-2 py-1 text-xs text-ink-soft">
                   {m.reason}
                 </p>
               )}

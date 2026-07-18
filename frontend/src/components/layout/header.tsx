@@ -37,11 +37,11 @@ export function Header({ title, onOpenMenu, onOpenPalette }: HeaderProps) {
         type="button"
         onClick={onOpenPalette}
         aria-label="Abrir busca e ações rápidas"
-        className="ml-auto flex h-9 items-center gap-2 rounded-lg border border-line bg-white px-2.5 text-ink-mute shadow-sm transition-colors hover:border-graphite-200 hover:text-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:w-64"
+        className="ml-auto flex h-9 items-center gap-2 rounded-lg border border-line bg-surface px-2.5 text-ink-mute shadow-sm transition-colors hover:border-graphite-200 hover:text-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:w-64"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="hidden text-sm sm:inline">Buscar ou navegar…</span>
-        <kbd className="ml-auto hidden items-center gap-0.5 rounded border border-line bg-graphite-50 px-1.5 py-0.5 font-sans text-[11px] font-medium text-ink-mute sm:inline-flex">
+        <kbd className="ml-auto hidden items-center gap-0.5 rounded border border-line bg-surface-muted px-1.5 py-0.5 font-sans text-[11px] font-medium text-ink-mute sm:inline-flex">
           {isMac ? "⌘" : "Ctrl"} K
         </kbd>
       </button>

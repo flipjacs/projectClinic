@@ -105,7 +105,7 @@ export function LogoUploader({
           >
             <div
               className={cn(
-                "flex items-center justify-center overflow-hidden rounded-xl border border-line bg-graphite-50/60 p-3",
+                "flex items-center justify-center overflow-hidden rounded-xl border border-line bg-surface-muted/60 p-3",
                 shape === "square" ? "h-32 w-32" : "h-32",
               )}
             >
@@ -164,7 +164,7 @@ export function LogoUploader({
               shape === "square" ? "h-32 w-32" : "h-32",
               isDragging
                 ? "border-gold-400 bg-gold-50"
-                : "border-line bg-graphite-50/40 hover:border-gold-300 hover:bg-gold-50/60",
+                : "border-line bg-surface-muted/40 hover:border-gold-300 hover:bg-gold-50/60",
             )}
           >
             {isProcessing ? (

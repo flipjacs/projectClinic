@@ -16,6 +16,27 @@
       rel="stylesheet"
     />
     <title>OdontoPrime · Gestão Odontológica</title>
+    <script>
+      // Aplica tema/densidade ANTES do primeiro paint (evita flash de tema).
+      (function () {
+        try {
+          var raw = localStorage.getItem("clinic.appearance");
+          var s = raw ? JSON.parse(raw).state : null;
+          var theme = (s && s.theme) || "light";
+          var resolved =
+            theme === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          var el = document.documentElement;
+          el.setAttribute("data-theme", resolved);
+          el.setAttribute("data-density", (s && s.density) || "comfortable");
+          if (s && s.preferences && s.preferences.highContrast)
+            el.setAttribute("data-contrast", "high");
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

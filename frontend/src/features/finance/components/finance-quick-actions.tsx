@@ -70,7 +70,7 @@ export function FinanceQuickActions() {
           key={to}
           type="button"
           onClick={() => navigate(to)}
-          className="group flex items-center gap-3 rounded-2xl border border-line bg-white p-4 text-left shadow-card transition-all duration-150 ease-out-quint hover:border-gold-200 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+          className="group flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-left shadow-card transition-all duration-150 ease-out-quint hover:border-gold-200 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-50 text-gold-600 ring-1 ring-inset ring-gold-100 transition-colors group-hover:bg-gold-100">
             <Icon className="h-5 w-5" aria-hidden />

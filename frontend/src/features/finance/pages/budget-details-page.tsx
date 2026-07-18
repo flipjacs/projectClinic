@@ -143,7 +143,7 @@ export function BudgetDetailsPage() {
             <CardBody className="p-0">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-line text-sm">
-                  <thead className="bg-graphite-50">
+                  <thead className="bg-surface-muted">
                     <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
                       <th className="px-5 py-2.5">Procedimento</th>
                       <th className="px-5 py-2.5">Qtd</th>
@@ -164,7 +164,7 @@ export function BudgetDetailsPage() {
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t border-line bg-graphite-50/60">
+                    <tr className="border-t border-line bg-surface-muted/60">
                       <td colSpan={3} className="px-5 py-3 font-medium text-ink-mute">
                         Total do orçamento
                       </td>
@@ -193,7 +193,7 @@ export function BudgetDetailsPage() {
             </CardHeader>
             <CardBody className="p-0">
               {isTerminal && (
-                <p className="border-b border-line bg-graphite-50/60 px-5 py-3 text-sm text-ink-mute">
+                <p className="border-b border-line bg-surface-muted/60 px-5 py-3 text-sm text-ink-mute">
                   Este orçamento não pode receber pagamentos porque está{" "}
                   {budget.status === "canceled" ? "cancelado" : "rejeitado"}.
                 </p>

@@ -12,6 +12,7 @@ export const passwordPolicySchema = z.object({
     .min(6, "Mínimo de 6 caracteres")
     .max(64, "Máximo de 64 caracteres"),
   requireUppercase: z.boolean(),
+  requireLowercase: z.boolean(),
   requireNumbers: z.boolean(),
   requireSpecialChars: z.boolean(),
   /** 0 = senhas nunca expiram. */
@@ -35,6 +36,7 @@ export function defaultSecuritySettings(): SecuritySettingsFormValues {
     passwordPolicy: {
       minLength: 8,
       requireUppercase: true,
+      requireLowercase: true,
       requireNumbers: true,
       requireSpecialChars: false,
       expirationDays: 0,
@@ -54,7 +56,7 @@ export function assessPolicyStrength(policy: PasswordPolicy): PolicyStrength {
   let score = 0;
   if (policy.minLength >= 8) score += 1;
   if (policy.minLength >= 12) score += 1;
-  if (policy.requireUppercase) score += 1;
+  if (policy.requireUppercase && policy.requireLowercase) score += 1;
   if (policy.requireNumbers) score += 1;
   if (policy.requireSpecialChars) score += 1;
   if (!policy.allowPasswordReuse) score += 1;

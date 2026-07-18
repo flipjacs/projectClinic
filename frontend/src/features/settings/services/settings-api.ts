@@ -11,9 +11,10 @@ import {
 /**
  * Client HTTP das Configurações da Clínica.
  *
- * O backend AINDA NÃO expõe estes endpoints — este arquivo define o contrato
- * (paths + DTO em snake_case, como os demais módulos) para que a UI já opere
- * desacoplada. Quando o backend chegar, nada acima desta camada muda.
+ * Endpoints IMPLEMENTADOS no backend (Fase 7): GET/PUT /settings/clinic e
+ * POST/DELETE /settings/clinic/logo, persistindo no MySQL com RBAC (ADMIN
+ * para escrita) e Audit Log. O 404 do GET segue tratado como "nada salvo"
+ * (abre com os padrões) para a primeira vez que a clínica é configurada.
  */
 
 const CLINIC_PATH = "/settings/clinic";

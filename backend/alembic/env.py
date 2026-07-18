@@ -18,6 +18,9 @@ from app.modules.finance import models as finance_models  # noqa: F401
 from app.modules.inventory import models as inventory_models  # noqa: F401
 from app.modules.reports import models as reports_models  # noqa: F401
 from app.modules.audit import models as audit_models  # noqa: F401
+from app.modules.settings import models as settings_models  # noqa: F401
+from app.modules.settings import security_models as settings_security_models  # noqa: F401
+from app.modules.settings import appearance_models as settings_appearance_models  # noqa: F401
 
 
 config = context.config

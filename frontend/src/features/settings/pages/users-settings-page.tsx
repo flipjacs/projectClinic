@@ -28,7 +28,7 @@ export function UsersSettingsPage() {
           actions={
             <Link
               to="/users"
-              className="inline-flex h-9 select-none items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium text-ink shadow-sm transition-colors duration-150 ease-out-quint hover:bg-graphite-50 active:bg-graphite-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2"
+              className="inline-flex h-9 select-none items-center gap-1.5 rounded-lg border border-line bg-surface px-3 text-sm font-medium text-ink shadow-sm transition-colors duration-150 ease-out-quint hover:bg-surface-muted active:bg-graphite-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2"
             >
               Abrir usuários
               <ArrowRight className="h-4 w-4" aria-hidden />

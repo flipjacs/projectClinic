@@ -40,7 +40,7 @@ export function PatientSelect({
     return (
       <div className="w-full">
         <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
-        <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-graphite-50 px-3 py-2">
+        <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-surface-muted px-3 py-2">
           <span className="truncate text-sm font-medium text-ink">{name || "Paciente selecionado"}</span>
           <button
             type="button"
@@ -91,7 +91,7 @@ export function PatientSelect({
       </div>
 
       {showResults && (
-        <ul className="mt-1 max-h-56 overflow-y-auto rounded-lg border border-line bg-white py-1 shadow-soft">
+        <ul className="mt-1 max-h-56 overflow-y-auto rounded-lg border border-line bg-surface py-1 shadow-soft">
           {isFetching && (!data || data.items.length === 0) ? (
             <li className="px-3 py-2 text-sm text-ink-mute">Buscando…</li>
           ) : !data || data.items.length === 0 ? (

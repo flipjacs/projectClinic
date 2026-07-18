@@ -65,7 +65,7 @@ export function SettingsDangerZone({
       </div>
       <p className="mt-1 text-sm text-ink-mute">{description}</p>
 
-      <div className="mt-3 divide-y divide-danger-100 rounded-2xl border border-danger-200 bg-white shadow-card">
+      <div className="mt-3 divide-y divide-danger-100 rounded-2xl border border-danger-200 bg-surface shadow-card">
         {actions.map((action) => (
           <div
             key={action.key}

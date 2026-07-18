@@ -24,7 +24,7 @@ export function PeriodSelector() {
       <div
         role="group"
         aria-label="Período do relatório"
-        className="inline-flex flex-wrap items-center gap-1 rounded-xl border border-line bg-white p-1 shadow-card"
+        className="inline-flex flex-wrap items-center gap-1 rounded-xl border border-line bg-surface p-1 shadow-card"
       >
         {PERIOD_OPTIONS.map((opt) => {
           const active = period.preset === opt.value;
@@ -39,7 +39,7 @@ export function PeriodSelector() {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400",
                 active
                   ? "bg-gold-50 text-gold-800"
-                  : "text-ink-soft hover:bg-graphite-50",
+                  : "text-ink-soft hover:bg-surface-muted",
               )}
             >
               {opt.label}

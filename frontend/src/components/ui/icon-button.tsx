@@ -18,7 +18,7 @@ interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
 const variants: Record<IconButtonVariant, string> = {
   ghost: "text-ink-mute hover:bg-graphite-100 hover:text-ink active:bg-graphite-200/60",
   secondary:
-    "border border-line bg-white text-ink-soft shadow-sm hover:bg-graphite-50 active:bg-graphite-100",
+    "border border-line bg-surface text-ink-soft shadow-sm hover:bg-surface-muted active:bg-graphite-100",
   danger: "text-danger-600 hover:bg-danger-50 active:bg-danger-100",
 };
 

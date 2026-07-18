@@ -26,7 +26,7 @@ export function BudgetMobileCard({ budget, onOpen }: BudgetMobileCardProps) {
       onClick={() => onOpen(budget.id)}
       onKeyDown={onKeyDown}
       aria-label={`Abrir orçamento de ${budget.patient.name}`}
-      className="cursor-pointer rounded-2xl border border-line bg-white p-4 shadow-card transition-colors hover:border-graphite-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+      className="cursor-pointer rounded-2xl border border-line bg-surface p-4 shadow-card transition-colors hover:border-graphite-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">

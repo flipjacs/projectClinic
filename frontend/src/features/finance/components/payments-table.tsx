@@ -32,9 +32,9 @@ export function PaymentsTable({
   return (
     <>
       {/* Desktop: tabela */}
-      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-surface shadow-card sm:block">
         <table className="min-w-full divide-y divide-line">
-          <thead className="bg-graphite-50">
+          <thead className="bg-surface-muted">
             <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
               {!hidePatient && <th className="px-5 py-3">Paciente</th>}
               <th className="px-5 py-3">Valor</th>

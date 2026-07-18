@@ -58,7 +58,7 @@ function InfoTile({
   valueClassName?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="rounded-2xl border border-line bg-surface p-4 shadow-card">
       <div className="flex items-center gap-2 text-ink-mute">
         <Icon className="h-4 w-4" aria-hidden />
         <span className="text-xs font-medium">{label}</span>

@@ -53,7 +53,7 @@ function AlertCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-line bg-white p-3 shadow-card transition-colors",
+        "rounded-xl border border-line bg-surface p-3 shadow-card transition-colors",
         SEV[severity].ring,
       )}
     >
@@ -153,7 +153,7 @@ export function InventoryAlerts({ limit = 5, onOpen, onMove, onEdit }: Inventory
 
   if (lowItems.length === 0 && expItems.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-white px-6 py-10 text-center shadow-card">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-surface px-6 py-10 text-center shadow-card">
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
           <CheckCircle2 className="h-6 w-6" aria-hidden />
         </span>

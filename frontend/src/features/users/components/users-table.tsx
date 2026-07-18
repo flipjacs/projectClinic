@@ -96,7 +96,7 @@ export function UsersTable({
         {users.map((u) => (
           <div
             key={u.id}
-            className="rounded-2xl border border-line bg-white p-4 shadow-card"
+            className="rounded-2xl border border-line bg-surface p-4 shadow-card"
           >
             <div className="flex items-center gap-3">
               <UserAvatar name={u.name} role={u.role} inactive={!u.is_active} />
@@ -119,10 +119,10 @@ export function UsersTable({
       </div>
 
       {/* Desktop: tabela */}
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-card sm:block">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-graphite-50">
+            <thead className="bg-surface-muted">
               <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide">
                 <SortHeader label="Usuário" column="name" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortHeader label="Cargo" column="role" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />

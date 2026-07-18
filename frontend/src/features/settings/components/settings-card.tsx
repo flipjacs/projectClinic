@@ -17,7 +17,7 @@ export function SettingsCard({ category }: { category: SettingsCategory }) {
       to={category.path}
       aria-label={`${category.label} — ${category.description}`}
       className={
-        "group flex h-full flex-col rounded-2xl border border-line bg-white p-5 shadow-card " +
+        "group flex h-full flex-col rounded-2xl border border-line bg-surface p-5 shadow-card " +
         "transition-[box-shadow,transform,border-color] duration-200 ease-out-quint " +
         "hover:-translate-y-0.5 hover:border-graphite-200 hover:shadow-lift " +
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas " +

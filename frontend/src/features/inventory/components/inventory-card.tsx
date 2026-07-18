@@ -106,7 +106,7 @@ export function InventoryCard({
   );
 
   const base = cn(
-    "group relative block overflow-hidden rounded-2xl border bg-white p-5 shadow-card",
+    "group relative block overflow-hidden rounded-2xl border bg-surface p-5 shadow-card",
     "transition-shadow duration-150 ease-out-quint",
     BORDER[tone],
   );

@@ -18,7 +18,7 @@ const variants: Record<Variant, string> = {
     "bg-gold-500 text-white shadow-sm hover:bg-gold-600 hover:shadow-gold-glow active:bg-gold-700 disabled:bg-gold-300 disabled:shadow-none",
   // Ação secundária — superfície clara com borda.
   secondary:
-    "bg-white text-ink border border-line shadow-sm hover:bg-graphite-50 active:bg-graphite-100",
+    "bg-surface text-ink border border-line shadow-sm hover:bg-surface-muted active:bg-graphite-100",
   // Contorno dourado — para CTAs informativos / alternativos.
   outline:
     "bg-transparent text-gold-700 border border-gold-300 hover:bg-gold-50 active:bg-gold-100",

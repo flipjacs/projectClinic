@@ -51,7 +51,10 @@ services:
       - ./alembic:/app/alembic:z
       - ./alembic.ini:/app/alembic.ini:ro,z
       - ./tests:/app/tests:ro,z
+      - clinic_media:/app/media
 
 volumes:
   mysql_data:
+    driver: local
+  clinic_media:
     driver: local

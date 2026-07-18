@@ -27,7 +27,7 @@ export function ApiIntegrationCard({ data }: { data: ApiState }) {
         description="Sempre exibida mascarada. A chave completa aparece uma única vez, ao ser gerada."
         control={
           data?.hasKey && data.maskedKey ? (
-            <code className="rounded-md bg-graphite-50 px-2 py-1 font-mono text-xs text-ink-soft">
+            <code className="rounded-md bg-surface-muted px-2 py-1 font-mono text-xs text-ink-soft">
               {data.maskedKey}
             </code>
           ) : (

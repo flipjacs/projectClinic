@@ -12,7 +12,7 @@ export function SettingsFormSkeleton({ cards = 3 }: { cards?: number }) {
       aria-label="Carregando configurações"
     >
       {Array.from({ length: cards }, (_, i) => (
-        <div key={i} className="rounded-2xl border border-line bg-white p-5 shadow-card">
+        <div key={i} className="rounded-2xl border border-line bg-surface p-5 shadow-card">
           <div className="flex items-center gap-3">
             <Skeleton className="h-9 w-9 rounded-xl" />
             <Skeleton className="h-4 w-44" />

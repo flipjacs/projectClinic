@@ -39,7 +39,7 @@ export function ItemSelect({ value, onChange, label = "Material", error }: ItemS
     return (
       <div className="w-full">
         <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
-        <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-graphite-50 px-3 py-2">
+        <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-surface-muted px-3 py-2">
           <span className="flex min-w-0 items-center gap-2">
             <Package className="h-4 w-4 shrink-0 text-gold-600" aria-hidden />
             <span className="min-w-0">
@@ -97,7 +97,7 @@ export function ItemSelect({ value, onChange, label = "Material", error }: ItemS
         />
 
         {showResults && (
-          <div className="absolute z-dropdown mt-1.5 max-h-72 w-full overflow-auto rounded-xl border border-line bg-white p-1 shadow-elevated">
+          <div className="absolute z-dropdown mt-1.5 max-h-72 w-full overflow-auto rounded-xl border border-line bg-surface p-1 shadow-elevated">
             {isFetching && results.length === 0 ? (
               <p className="px-3 py-6 text-center text-sm text-ink-mute">Buscando…</p>
             ) : results.length === 0 ? (
@@ -113,7 +113,7 @@ export function ItemSelect({ value, onChange, label = "Material", error }: ItemS
                     onChange(item);
                     setQuery("");
                   }}
-                  className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-graphite-50"
+                  className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-muted"
                 >
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-medium text-ink">

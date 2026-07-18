@@ -53,7 +53,7 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        "relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-5 shadow-card",
+        "relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-surface p-5 shadow-card",
         "transition-shadow duration-150 ease-out-quint hover:shadow-soft",
         highlight ? "border-gold-200" : "border-line",
       )}

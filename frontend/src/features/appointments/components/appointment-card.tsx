@@ -18,7 +18,7 @@ export function AppointmentCard({ appointment, onOpen }: AppointmentCardProps) {
       type="button"
       onClick={() => onOpen(appointment.id)}
       className={cn(
-        "group block w-full rounded-2xl border border-line bg-white p-4 text-left shadow-card",
+        "group block w-full rounded-2xl border border-line bg-surface p-4 text-left shadow-card",
         "transition-shadow duration-150 ease-out-quint hover:shadow-soft hover:border-graphite-200",
         canceled && "opacity-75",
       )}

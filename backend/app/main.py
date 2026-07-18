@@ -1,6 +1,9 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -16,10 +19,29 @@ from app.modules.procedures.routes import router as procedures_router
 from app.modules.finance.routes import router as finance_router
 from app.modules.inventory.routes import router as inventory_router
 from app.modules.reports.routes import router as reports_router
+from app.modules.settings.routes import router as settings_router
+from app.modules.settings.security_routes import router as security_settings_router
+from app.modules.settings.appearance_routes import router as appearance_settings_router
 from app.shared.exceptions import AppException
 from app.shared.request_context import RequestContextMiddleware
 
 logger = get_logger("app")
+
+
+class SecureStaticFiles(StaticFiles):
+    """StaticFiles com cabeçalhos que neutralizam conteúdo ativo.
+
+    Mesmo que um SVG malicioso escapasse da validação de upload, ``sandbox`` +
+    ``default-src 'none'`` impedem execução de script, e ``nosniff`` evita
+    confusão de MIME. Os logos são consumidos via ``<img>``, que não executa
+    scripts de SVG — isto é a segunda camada.
+    """
+
+    async def get_response(self, path, scope):  # noqa: ANN001
+        response = await super().get_response(path, scope)
+        response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response
 
 
 def create_app() -> FastAPI:
@@ -106,6 +128,20 @@ def create_app() -> FastAPI:
     app.include_router(finance_router, prefix=api_prefix)
     app.include_router(inventory_router, prefix=api_prefix)
     app.include_router(reports_router, prefix=api_prefix)
+    app.include_router(settings_router, prefix=api_prefix)
+    app.include_router(security_settings_router, prefix=api_prefix)
+    app.include_router(appearance_settings_router, prefix=api_prefix)
+
+    # Arquivos enviados (logos da clínica). Servidos como estáticos; o banco
+    # guarda apenas o caminho relativo, nunca o binário. Cabeçalhos de defesa
+    # em profundidade impedem execução de conteúdo ativo (ex.: SVG com script).
+    media_root = Path(settings.media_dir)
+    media_root.mkdir(parents=True, exist_ok=True)
+    app.mount(
+        settings.media_url_path,
+        SecureStaticFiles(directory=str(media_root)),
+        name="media",
+    )
 
     return app
 

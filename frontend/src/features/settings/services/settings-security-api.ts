@@ -9,21 +9,21 @@ import type {
 /**
  * Client HTTP das Configurações de Segurança.
  *
- * O backend AINDA NÃO expõe estes endpoints — este arquivo define o contrato
- * (paths + DTO em snake_case) para a UI operar desacoplada. GET com 404 é
- * tratado como "nada salvo"; escritas falham com mensagem honesta até o
- * backend chegar.
+ * Endpoints IMPLEMENTADOS (Fase 8): GET/PUT /settings/security persistem a
+ * política de senha no MySQL (RBAC ADMIN, Audit Log). Sessões e 2FA têm a
+ * arquitetura pronta e respondem 501 (nunca 404) até haver infraestrutura.
  */
 
 const SECURITY_PATH = "/settings/security";
 const AUDIT_PATH = "/settings/security/audit";
-const SESSIONS_PATH = "/auth/sessions";
+const LOGOUT_ALL_PATH = "/settings/security/logout-all";
 
 /** DTO no formato do backend (snake_case, padrão dos outros módulos). */
 export interface SecuritySettingsDto {
   password_policy: {
     min_length: number;
     require_uppercase: boolean;
+    require_lowercase: boolean;
     require_numbers: boolean;
     require_special_chars: boolean;
     expiration_days: number;
@@ -48,6 +48,7 @@ export function toSecurityFormValues(dto: SecuritySettingsDto): SecuritySettings
     passwordPolicy: {
       minLength: p.min_length,
       requireUppercase: p.require_uppercase,
+      requireLowercase: p.require_lowercase,
       requireNumbers: p.require_numbers,
       requireSpecialChars: p.require_special_chars,
       expirationDays: p.expiration_days,
@@ -62,6 +63,7 @@ export function toSecurityPayload(values: SecuritySettingsFormValues): SecurityS
     password_policy: {
       min_length: p.minLength,
       require_uppercase: p.requireUppercase,
+      require_lowercase: p.requireLowercase,
       require_numbers: p.requireNumbers,
       require_special_chars: p.requireSpecialChars,
       expiration_days: p.expirationDays,
@@ -111,9 +113,14 @@ export async function getSecurityAudit(): Promise<SecurityAuditInfo | null> {
   }
 }
 
-/** Encerra sessões no servidor ("others" preserva a atual). */
-export async function terminateSessions(scope: "others" | "all"): Promise<void> {
-  await api.delete(SESSIONS_PATH, { params: { scope } });
+/**
+ * Encerra sessões no servidor. O encerramento de todas as sessões usa
+ * /settings/security/logout-all; "others" reaproveita o mesmo endpoint. O
+ * backend responde 501 enquanto a infraestrutura de sessões não existe — o
+ * hook traduz isso numa mensagem honesta para o usuário.
+ */
+export async function terminateSessions(_scope: "others" | "all"): Promise<void> {
+  await api.post(LOGOUT_ALL_PATH);
 }
 
 /** Exportação de dados pessoais (LGPD) — download assíncrono no futuro. */

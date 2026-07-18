@@ -4,6 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import { CommandPalette } from "@/components/command/command-palette";
 import { Loading } from "@/components/feedback/loading";
+import { useAppearanceSync } from "@/features/settings/hooks/use-appearance-sync";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { pageVariants } from "@/lib/motion";
 import { NAV_ITEMS } from "@/lib/permissions";
@@ -16,6 +17,9 @@ export function AppLayout() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Carrega e aplica as preferências de aparência do backend (fonte de verdade).
+  useAppearanceSync();
 
   // Título da página a partir da rota atual (sem cálculos pesados).
   const current = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path));

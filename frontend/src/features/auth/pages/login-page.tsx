@@ -73,7 +73,7 @@ export function LoginPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-line bg-white p-6 shadow-soft sm:p-8">
+          <div className="rounded-2xl border border-line bg-surface p-6 shadow-soft sm:p-8">
             <LoginForm />
           </div>
 

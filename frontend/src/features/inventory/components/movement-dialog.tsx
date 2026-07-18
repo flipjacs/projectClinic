@@ -176,7 +176,7 @@ export function MovementDialog({
     >
       <form id="movement-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {presetItem ? (
-          <div className="rounded-lg border border-line bg-graphite-50 px-3 py-2">
+          <div className="rounded-lg border border-line bg-surface-muted px-3 py-2">
             <p className="text-sm font-medium text-ink">{presetItem.name}</p>
             <p className="text-xs text-ink-mute">
               Saldo atual: {formatQuantity(presetItem.current_quantity)} {unit}
@@ -204,7 +204,7 @@ export function MovementDialog({
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-1",
                     active
                       ? "border-gold-300 bg-gold-50 text-gold-800"
-                      : "border-line bg-white text-ink-soft hover:bg-graphite-50",
+                      : "border-line bg-surface text-ink-soft hover:bg-surface-muted",
                   )}
                 >
                   <Icon className="h-4 w-4" aria-hidden />
@@ -234,7 +234,7 @@ export function MovementDialog({
           <div
             className={cn(
               "flex items-center justify-between rounded-lg px-3 py-2 text-sm",
-              resulting <= 0 ? "bg-red-50 text-red-700" : "bg-graphite-50 text-ink-soft",
+              resulting <= 0 ? "bg-red-50 text-red-700" : "bg-surface-muted text-ink-soft",
             )}
           >
             <span>Saldo após a movimentação</span>

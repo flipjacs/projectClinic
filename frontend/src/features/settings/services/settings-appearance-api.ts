@@ -6,9 +6,10 @@ import type { AppearanceSettingsFormValues } from "../schemas/appearance-schema"
 /**
  * Client HTTP das Configurações de Aparência.
  *
- * O backend AINDA NÃO expõe estes endpoints — contrato definido aqui (path +
- * DTO snake_case) para a UI operar desacoplada. GET 404 = "nada salvo";
- * escrita falha com mensagem honesta até o backend chegar.
+ * Endpoints IMPLEMENTADOS (por usuário): GET/PUT /settings/appearance. O GET
+ * sempre retorna 200 (padrões se o usuário ainda não personalizou), então o
+ * tema é aplicado sem risco de falha. O appearance-store hidrata a partir daqui
+ * e mantém o localStorage só como cache anti-flicker.
  */
 
 const APPEARANCE_PATH = "/settings/appearance";

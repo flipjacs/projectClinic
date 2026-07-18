@@ -36,7 +36,7 @@ function Chip({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-1",
         selected
           ? "border-gold-400 bg-gold-50 font-medium text-gold-700"
-          : "border-line bg-white text-ink-soft hover:border-graphite-200",
+          : "border-line bg-surface text-ink-soft hover:border-graphite-200",
       )}
     >
       <span
@@ -119,7 +119,7 @@ export function HealthConditionSelector({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-1",
             otherEnabled
               ? "border-gold-400 bg-gold-50 font-medium text-gold-700"
-              : "border-graphite-200 bg-white text-ink-soft hover:border-graphite-300",
+              : "border-graphite-200 bg-surface text-ink-soft hover:border-graphite-300",
           )}
         >
           <Plus className="h-3.5 w-3.5 shrink-0" aria-hidden />

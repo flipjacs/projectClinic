@@ -30,7 +30,7 @@ export function UserPermissions({ role }: { role: Role }) {
               key={mod.key}
               className={cn(
                 "flex items-center gap-3 rounded-xl border p-3",
-                mod.allowed ? "border-line bg-white" : "border-dashed border-line bg-canvas/40",
+                mod.allowed ? "border-line bg-surface" : "border-dashed border-line bg-canvas/40",
               )}
             >
               <span

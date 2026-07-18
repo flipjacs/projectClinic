@@ -10,11 +10,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 /** Classe base compartilhada por todos os controles de formulário de texto. */
 export const fieldBase = cn(
-  "w-full rounded-lg border bg-white text-sm text-ink",
+  "w-full rounded-lg border bg-surface text-sm text-ink",
   "placeholder:text-ink-mute/70",
   "transition-[border-color,box-shadow] duration-150 ease-out-quint",
   "focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-0",
-  "disabled:cursor-not-allowed disabled:bg-graphite-50 disabled:text-ink-mute",
+  "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-mute",
 );
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(

@@ -36,7 +36,7 @@ export function MovementsTable({ movements, unit, hideItemLink }: MovementsTable
       {/* Mobile: cards */}
       <div className="space-y-3 sm:hidden">
         {movements.map((m) => (
-          <div key={m.id} className="rounded-2xl border border-line bg-white p-4 shadow-card">
+          <div key={m.id} className="rounded-2xl border border-line bg-surface p-4 shadow-card">
             <div className="flex items-center justify-between gap-2">
               <MovementTypeBadge type={m.movement_type} />
               <time className="text-xs text-ink-mute">{formatDateTime(m.created_at)}</time>
@@ -62,7 +62,7 @@ export function MovementsTable({ movements, unit, hideItemLink }: MovementsTable
             </div>
             <p className="mt-2 text-xs text-ink-mute">por {m.created_by.name}</p>
             {m.reason && (
-              <p className="mt-2 rounded-md bg-graphite-50 px-2 py-1 text-xs text-ink-soft">
+              <p className="mt-2 rounded-md bg-surface-muted px-2 py-1 text-xs text-ink-soft">
                 {m.reason}
               </p>
             )}
@@ -71,9 +71,9 @@ export function MovementsTable({ movements, unit, hideItemLink }: MovementsTable
       </div>
 
       {/* Desktop: tabela */}
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-card sm:block">
         <table className="w-full text-sm">
-          <thead className="bg-graphite-50">
+          <thead className="bg-surface-muted">
             <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
               <th className="px-5 py-3">Data</th>
               <th className="px-5 py-3">Tipo</th>

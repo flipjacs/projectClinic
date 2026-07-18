@@ -78,7 +78,7 @@ export function SettingsSearch({ value, onChange, resultCount }: SettingsSearchP
         ) : (
           <kbd
             aria-hidden
-            className="hidden rounded-md border border-line bg-graphite-50 px-1.5 py-0.5 text-[11px] font-medium text-ink-mute sm:block"
+            className="hidden rounded-md border border-line bg-surface-muted px-1.5 py-0.5 text-[11px] font-medium text-ink-mute sm:block"
           >
             /
           </kbd>

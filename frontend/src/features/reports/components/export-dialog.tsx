@@ -83,7 +83,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
                     "flex items-start justify-between gap-2 rounded-xl border p-3 text-left transition-colors",
                     active
                       ? "border-gold-300 bg-gold-50"
-                      : "border-line bg-white hover:bg-graphite-50",
+                      : "border-line bg-surface hover:bg-surface-muted",
                   )}
                 >
                   <span className="min-w-0">
@@ -107,7 +107,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
             {(["PDF", "Excel"] as const).map((fmt) => (
               <div
                 key={fmt}
-                className="flex flex-col items-center gap-1 rounded-xl border border-line bg-graphite-50 p-3 opacity-70"
+                className="flex flex-col items-center gap-1 rounded-xl border border-line bg-surface-muted p-3 opacity-70"
                 title="Em breve"
               >
                 {fmt === "PDF" ? (
@@ -127,7 +127,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
           </p>
         </div>
 
-        <div className="rounded-lg bg-graphite-50 px-3 py-2 text-sm text-ink-soft">
+        <div className="rounded-lg bg-surface-muted px-3 py-2 text-sm text-ink-soft">
           Período: <span className="font-medium text-ink">{periodLabel(period.preset)}</span>{" "}
           <span className="text-ink-mute">
             ({formatDateOnly(period.start_date)} – {formatDateOnly(period.end_date)})

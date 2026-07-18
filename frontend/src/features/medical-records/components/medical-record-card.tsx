@@ -28,9 +28,9 @@ export function MedicalRecordCard({ record, onOpen }: MedicalRecordCardProps) {
       type="button"
       onClick={() => onOpen(record.id)}
       className={cn(
-        "group block w-full rounded-2xl border bg-white p-5 text-left shadow-card",
+        "group block w-full rounded-2xl border bg-surface p-5 text-left shadow-card",
         "transition-shadow duration-150 ease-out-quint hover:shadow-soft hover:border-graphite-200",
-        record.is_active ? "border-line" : "border-line bg-graphite-50/60",
+        record.is_active ? "border-line" : "border-line bg-surface-muted/60",
       )}
     >
       <div className="flex items-start justify-between gap-3">

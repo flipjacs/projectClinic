@@ -18,7 +18,7 @@ interface Props {
 export function InventoryItemMobileCard({ item, onOpen, onEdit, onMove }: Props) {
   const unit = UNIT_SHORT_LABELS[item.unit_of_measure];
   return (
-    <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="rounded-2xl border border-line bg-surface p-4 shadow-card">
       <button
         type="button"
         onClick={() => onOpen(item)}

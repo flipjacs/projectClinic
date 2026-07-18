@@ -50,9 +50,9 @@ export function ProceduresTable({
   return (
     <>
       {/* Desktop: tabela limpa */}
-      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-white shadow-card sm:block">
+      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-surface shadow-card sm:block">
         <table className="min-w-full divide-y divide-line">
-          <thead className="bg-graphite-50">
+          <thead className="bg-surface-muted">
             <tr className="text-left text-xs font-medium uppercase tracking-wide text-ink-mute">
               <th className="px-5 py-3">Procedimento</th>
               <th className="px-5 py-3">Valor base</th>
@@ -98,7 +98,7 @@ export function ProceduresTable({
       {/* Mobile: cards */}
       <div className="space-y-3 sm:hidden">
         {procedures.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-line bg-white p-4 shadow-card">
+          <div key={p.id} className="rounded-2xl border border-line bg-surface p-4 shadow-card">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-medium text-ink">{p.name}</p>
